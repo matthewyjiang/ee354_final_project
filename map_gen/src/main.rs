@@ -3,7 +3,6 @@
 
 // generate various map memory layouts and verify that there exists a path from the beginning to the end
 
-
 use rand::prelude::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -31,7 +30,6 @@ fn main() {
         }
     }
 
-
     // find path and verify map is solvable using bfs algorithm
 
     let mut queue = Vec::new();
@@ -40,7 +38,7 @@ fn main() {
     queue.push(starting_point);
     visited[starting_point.0][starting_point.1] = true;
 
-    let mut solvable:bool = false;
+    let mut solvable: bool = false;
 
     while !queue.is_empty() {
         let current = queue.remove(0);
@@ -87,12 +85,9 @@ fn main() {
         }
 
         let mut file = File::create("map.txt").expect("Error encountered while creating file!");
-        file.write_all(map_string.as_bytes()).expect("Error encountered while writing to file!");
+        file.write_all(map_string.as_bytes())
+            .expect("Error encountered while writing to file!");
     } else {
         println!("Map is not solvable");
     }
-
-    
-
-
 }

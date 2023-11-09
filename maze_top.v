@@ -1,60 +1,5 @@
-module vga_controller(
-    input wire clk,          // Main clock
-    input wire reset,        // Reset signal
-    output wire hsync,       // Horizontal sync output
-    output wire vsync,       // Vertical sync output
-    output wire [3:0] red,   // Red signal 
-    output wire [3:0] green, // Green signal
-    output wire [3:0] blue   // Blue signal
-    
-);
+`timescale 1ns / 1ps
 
-    reg [9:0] h_counter = 0; // Horizontal counter (for example resolution of 640 pixels)
-    reg [9:0] v_counter = 0; // Vertical counter (for example resolution of 480 pixels)
-
-    localparam H_SYNC_PULSE = ...;
-    localparam V_SYNC_PULSE = ...;
-
-    // VGA signal generation logic goes here
-    always @(posedge clk) begin
-        if (reset) begin
-            // Reset counters
-            h_counter <= 0;
-            v_counter <= 0;
-        end else begin
-            // Generate sync pulses and pixel data here
-            // ...
-
-            // Increment counters
-            h_counter <= (h_counter == H_MAX) ? 0 : h_counter + 1;
-            if (h_counter == H_MAX) begin
-                v_counter <= (v_counter == V_MAX) ? 0 : v_counter + 1;
-            end
-        end
-    end
-
-
-assign hsync = (h_counter < H_SYNC_PULSE) ? 1'b0 : 1'b1;
-assign vsync = (v_counter < V_SYNC_PULSE) ? 1'b0 : 1'b1;
-
-assign red = ...;   // Define how to generate red signal
-assign green = ...; // Define how to generate green signal
-assign blue = ...;  // Define how to generate blue signal
-
-endmodule
-
-
-
-module SSD_Controller (
-    input wire clk,
-    input wire reset
-    // SSD signals, e.g., anode and cathode controls
-    // ...
-);
-
-    // SSD driving logic goes here
-
-endmodule
 
 module Input_Interface (
     input wire clk,
@@ -79,12 +24,47 @@ module Game_Logic (
 endmodule
 
 module Top_Level (
-    input wire clk,
-    input wire reset
-    // Include all other necessary I/O signals for VGA, SSD, Switches, Buttons
-    // ...
+    input ClkPort,
+	input BtnC,
+	input BtnU,
+	input BtnR,
+	input BtnL,
+	input BtnD,
+	//VGA signal
+	output hsync, vsync,
+	output [3:0] vgaR, vgaG, vgaB,
+	
+	//SSG signal 
+	output An0, An1, An2, An3, An4, An5, An6, An7,
+	output Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp,
+	
+	output MemOE, MemWR, RamCS, QuadSpiFlashCS
 );
+    wire Reset;
+    assign Reset=BtnC;
+    wire bright;
+	wire[9:0] hc, vc;
+	wire up,down,left,right;
+	wire [3:0] anode;
+	wire [11:0] rgb;
+	wire rst;
+    wire [3:0]	SSD3, SSD2, SSD1, SSD0;
 
+    
+	wire [1:0] 	ssdscan_clk;
+
+    reg [27:0]	DIV_CLK;
+	always @ (posedge ClkPort, posedge Reset)  
+	begin : CLOCK_DIVIDER
+      if (Reset)
+			DIV_CLK <= 0;
+	  else
+			DIV_CLK <= DIV_CLK + 1'b1;
+	end
+	wire move_clk;
+	assign move_clk=DIV_CLK[19]; //slower clock to drive the movement of objects on the vga screen
+	wire [11:0] background;
+    assign ssdscan_clk = DIV_CLK[19:18];
     // Instantiate modules and wire them up
 
     // Clock division and generation logic
@@ -94,14 +74,20 @@ module Top_Level (
     VGA_Controller vga_controller_inst (
         .clk(clk_25MHz),
         .reset(reset)
-        // Connect other ports
+        .hsync(hsync),
+        .vsync(vsync),
+        .rgb(rgb)
+        .h_counter(hc),
+        .v_counter(vc)
     );
 
     // SSD Controller instance
     SSD_Controller ssd_controller_inst (
-        .clk(clk),
-        .reset(reset)
-        // Connect other ports
+        .ssdscan_clk(ssdscan_clk),
+        .SSD3(SSD3),
+        .SSD2(SSD2),
+        .SSD1(SSD1),
+        .SSD0(SSD0)
     );
 
     // Input Interface instance
@@ -119,7 +105,14 @@ module Top_Level (
         // Connect other ports
     );
 
-    // Clock management logic to generate the 25MHz clock for VGA
-    // ...
+    assign vgaR = rgb[11 : 8];
+	assign vgaG = rgb[7  : 4];
+	assign vgaB = rgb[3  : 0];
 
+    // disable mamory ports
+	assign {MemOE, MemWR, RamCS, QuadSpiFlashCS} = 4'b1111;
+
+    
+	
+	assign {Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp} = {SSD_CATHODES};
 endmodule
