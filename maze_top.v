@@ -1,13 +1,49 @@
-module VGA_Controller (
-    input wire clk,
-    input wire reset
-    // Additional VGA signals, e.g., hsync, vsync, rgb, etc.
-    // ...
+module vga_controller(
+    input wire clk,          // Main clock
+    input wire reset,        // Reset signal
+    output wire hsync,       // Horizontal sync output
+    output wire vsync,       // Vertical sync output
+    output wire [3:0] red,   // Red signal 
+    output wire [3:0] green, // Green signal
+    output wire [3:0] blue   // Blue signal
+    
 );
 
+    reg [9:0] h_counter = 0; // Horizontal counter (for example resolution of 640 pixels)
+    reg [9:0] v_counter = 0; // Vertical counter (for example resolution of 480 pixels)
+
+    localparam H_SYNC_PULSE = ...;
+    localparam V_SYNC_PULSE = ...;
+
     // VGA signal generation logic goes here
+    always @(posedge clk) begin
+        if (reset) begin
+            // Reset counters
+            h_counter <= 0;
+            v_counter <= 0;
+        end else begin
+            // Generate sync pulses and pixel data here
+            // ...
+
+            // Increment counters
+            h_counter <= (h_counter == H_MAX) ? 0 : h_counter + 1;
+            if (h_counter == H_MAX) begin
+                v_counter <= (v_counter == V_MAX) ? 0 : v_counter + 1;
+            end
+        end
+    end
+
+
+assign hsync = (h_counter < H_SYNC_PULSE) ? 1'b0 : 1'b1;
+assign vsync = (v_counter < V_SYNC_PULSE) ? 1'b0 : 1'b1;
+
+assign red = ...;   // Define how to generate red signal
+assign green = ...; // Define how to generate green signal
+assign blue = ...;  // Define how to generate blue signal
 
 endmodule
+
+
 
 module SSD_Controller (
     input wire clk,
