@@ -1,25 +1,89 @@
-module top_design (
-    input clk,
-    input reset,
-    output reg [7:0] led
+module VGA_Controller (
+    input wire clk,
+    input wire reset
+    // Additional VGA signals, e.g., hsync, vsync, rgb, etc.
+    // ...
 );
 
-// Instantiate the maze module
-maze maze_inst (
-    .clk(clk),
-    .reset(reset),
-    .led(led)
-);
+    // VGA signal generation logic goes here
 
 endmodule
 
-// Instantiate the maze module
-module maze (
-    input clk,
-    input reset,
-    output reg [7:0] led
+module SSD_Controller (
+    input wire clk,
+    input wire reset
+    // SSD signals, e.g., anode and cathode controls
+    // ...
 );
 
-// Your maze module code here
+    // SSD driving logic goes here
+
+endmodule
+
+module Input_Interface (
+    input wire clk,
+    input wire reset,
+    input wire [N-1:0] switches, // Replace N with the number of switches
+    input wire [M-1:0] buttons // Replace M with the number of buttons
+);
+
+    // Input processing logic goes here, including debouncing
+
+endmodule
+
+module Game_Logic (
+    input wire clk,
+    input wire reset
+    // Game state signals, e.g., player position, maze state, etc.
+    // ...
+);
+
+    // Game logic goes here, including maze generation and collision detection
+
+endmodule
+
+module Top_Level (
+    input wire clk,
+    input wire reset
+    // Include all other necessary I/O signals for VGA, SSD, Switches, Buttons
+    // ...
+);
+
+    // Instantiate modules and wire them up
+
+    // Clock division and generation logic
+    // Clock management to generate a 25MHz clock from the onboard clock
+
+    // VGA Controller instance
+    VGA_Controller vga_controller_inst (
+        .clk(clk_25MHz),
+        .reset(reset)
+        // Connect other ports
+    );
+
+    // SSD Controller instance
+    SSD_Controller ssd_controller_inst (
+        .clk(clk),
+        .reset(reset)
+        // Connect other ports
+    );
+
+    // Input Interface instance
+    Input_Interface input_interface_inst (
+        .clk(clk),
+        .reset(reset),
+        .switches(switches), // Connect switches
+        .buttons(buttons) // Connect buttons
+    );
+
+    // Game Logic instance
+    Game_Logic game_logic_inst (
+        .clk(clk),
+        .reset(reset)
+        // Connect other ports
+    );
+
+    // Clock management logic to generate the 25MHz clock for VGA
+    // ...
 
 endmodule
