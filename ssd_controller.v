@@ -1,15 +1,15 @@
-module SSD_Controller (
+module ssd_controller (
     input wire [1:0] ssdscan_clk,
 
     input wire [3:0]	SSD3, SSD2, SSD1, SSD0,
     // SSD signals
-    output reg [7:0] SSD_CATHODES,
-	output An0, An1, An2, An3, An4, An5, An6, An7
     
+	output An0, An1, An2, An3, An4, An5, An6, An7,
+    output Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp
 	
 );
     reg [3:0]	SSD;
-
+	reg [7:0] SSD_CATHODES;
 	// Turn on one of the 4 anodes
 
 	assign An0	= !(~(ssdscan_clk[1]) && ~(ssdscan_clk[0]));  // when ssdscan_clk = 00
@@ -52,7 +52,10 @@ module SSD_Controller (
 			4'b1111: SSD_CATHODES = 8'b01110000; // F    
 			default: SSD_CATHODES = 8'bXXXXXXXX; // default is not needed as we covered all cases
 		endcase
+
 	end	
+
+	assign {Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp} = {SSD_CATHODES};
 
 
 endmodule

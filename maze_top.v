@@ -73,7 +73,7 @@ module Top_Level (
     // Clock management to generate a 25MHz clock from the onboard clock
 
     // VGA Controller instance
-    VGA_Controller vga_controller_inst (
+    vga_controller vga_controller_inst (
         .clk(clk_25MHz),
         .reset(reset),
         .hsync(hsync),
@@ -84,13 +84,12 @@ module Top_Level (
     );
 
     // SSD Controller instance
-    SSD_Controller ssd_controller_inst (
+    ssd_controller ssd_controller_inst (
         .ssdscan_clk(ssdscan_clk),
         .SSD3(SSD3),
         .SSD2(SSD2),
         .SSD1(SSD1),
         .SSD0(SSD0),
-        .SSD_CATHODES(SSD_CATHODES)
         .An0(An0),
         .An1(An1),
         .An2(An2),
@@ -98,23 +97,31 @@ module Top_Level (
         .An4(An4),
         .An5(An5),
         .An6(An6),
-        .An7(An7)
+        .An7(An7),
+        .Ca(Ca),
+        .Cb(Cb),
+        .Cc(Cc),
+        .Cd(Cd),
+        .Ce(Ce),
+        .Cf(Cf),
+        .Cg(Cg),
+        .Dp(Dp)
     );
 
-    // Input Interface instance
-    Input_Interface input_interface_inst (
-        .clk(clk),
-        .reset(reset),
-        .switches(switches), // Connect switches
-        .buttons(buttons) // Connect buttons
-    );
+    // // Input Interface instance
+    // Input_Interface input_interface_inst (
+    //     .clk(clk),
+    //     .reset(reset),
+    //     .switches(switches), // Connect switches
+    //     .buttons(buttons) // Connect buttons
+    // );
 
-    // Game Logic instance
-    Game_Logic game_logic_inst (
-        .clk(clk),
-        .reset(reset)
-        // Connect other ports
-    );
+    // // Game Logic instance
+    // Game_Logic game_logic_inst (
+    //     .clk(clk),
+    //     .reset(reset)
+    //     // Connect other ports
+    // );
 
     assign vgaR = rgb[11 : 8];
 	assign vgaG = rgb[7  : 4];
@@ -125,5 +132,5 @@ module Top_Level (
 
     
 	
-	assign {Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp} = {SSD_CATHODES};
+	
 endmodule

@@ -5,12 +5,14 @@ module vga_controller(
     input wire reset,        // Reset signal
     output wire hsync,       // Horizontal sync output
     output wire vsync,       // Vertical sync output
-    output reg [11:0] rgb   // RGB output
+    output reg [11:0] rgb,   // RGB output
+    output reg [9:0] h_counter, // Horizontal counter
+    output reg [9:0] v_counter  // Vertical counter
     
 );
 
-    reg [9:0] h_counter = 0; // Horizontal counter
-    reg [9:0] v_counter = 0; // Vertical counter
+    
+    
 
     localparam H_MAX = 10'd799;
     localparam V_MAX = 10'd599;
@@ -24,6 +26,8 @@ module vga_controller(
     initial begin // Set all of them initially to 0
 		clk25 = 0;
 		pulse = 0;
+        h_counter = 10'b0000000000;
+        v_counter = 10'b0000000000;
 	end
 
     always @(posedge clk)
