@@ -31,14 +31,14 @@ module Top_Level (
 	input BtnL,
 	input BtnD,
 	//VGA signal
-	output hsync, vsync,
+	output hSync, vSync,
 	output [3:0] vgaR, vgaG, vgaB,
 	
 	//SSG signal 
 	output An0, An1, An2, An3, An4, An5, An6, An7,
 	output Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp,
 	
-	output MemOE, MemWR, RamCS, QuadSpiFlashCS
+	output QuadSpiFlashCS
 );
     wire Reset;
     assign Reset=BtnC;
@@ -48,6 +48,7 @@ module Top_Level (
 	wire [3:0] anode;
 	wire [11:0] rgb;
 	wire rst;
+    
     wire [3:0]	SSD3, SSD2, SSD1, SSD0;
 
     reg [7:0] SSD_CATHODES;
@@ -76,8 +77,8 @@ module Top_Level (
     vga_controller vga_controller_inst (
         .clk(clk_25MHz),
         .reset(reset),
-        .hsync(hsync),
-        .vsync(vsync),
+        .hsync(hSync),
+        .vsync(vSync),
         .rgb(rgb),
         .h_counter(hc),
         .v_counter(vc)
@@ -128,7 +129,7 @@ module Top_Level (
 	assign vgaB = rgb[3  : 0];
 
     // disable mamory ports
-	assign {MemOE, MemWR, RamCS, QuadSpiFlashCS} = 4'b1111;
+	assign {QuadSpiFlashCS} = 1'b1;
 
     
 	
