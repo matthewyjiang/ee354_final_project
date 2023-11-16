@@ -4,8 +4,8 @@
 module Input_Interface (
     input wire clk,
     input wire reset,
-    input wire [N-1:0] switches, // Replace N with the number of switches
-    input wire [M-1:0] buttons // Replace M with the number of buttons
+    input wire [7:0] switches, // Replace N with the number of switches
+    input wire [3:0] buttons // Replace M with the number of buttons
 );
 
     // Input processing logic goes here, including debouncing
@@ -50,6 +50,8 @@ module Top_Level (
 	wire rst;
     wire [3:0]	SSD3, SSD2, SSD1, SSD0;
 
+    reg [7:0] SSD_CATHODES;
+
     
 	wire [1:0] 	ssdscan_clk;
 
@@ -73,10 +75,10 @@ module Top_Level (
     // VGA Controller instance
     VGA_Controller vga_controller_inst (
         .clk(clk_25MHz),
-        .reset(reset)
+        .reset(reset),
         .hsync(hsync),
         .vsync(vsync),
-        .rgb(rgb)
+        .rgb(rgb),
         .h_counter(hc),
         .v_counter(vc)
     );
@@ -87,7 +89,16 @@ module Top_Level (
         .SSD3(SSD3),
         .SSD2(SSD2),
         .SSD1(SSD1),
-        .SSD0(SSD0)
+        .SSD0(SSD0),
+        .SSD_CATHODES(SSD_CATHODES)
+        .An0(An0),
+        .An1(An1),
+        .An2(An2),
+        .An3(An3),
+        .An4(An4),
+        .An5(An5),
+        .An6(An6),
+        .An7(An7)
     );
 
     // Input Interface instance

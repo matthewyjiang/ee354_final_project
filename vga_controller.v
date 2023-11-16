@@ -5,7 +5,7 @@ module vga_controller(
     input wire reset,        // Reset signal
     output wire hsync,       // Horizontal sync output
     output wire vsync,       // Vertical sync output
-    output reg [11:0] rgb,   // RGB output
+    output reg [11:0] rgb   // RGB output
     
 );
 

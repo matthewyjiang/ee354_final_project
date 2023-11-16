@@ -1,8 +1,9 @@
 module SSD_Controller (
     input ssdscan_clk,
-    input wire [3:0]	SSD3, SSD2, SSD1, SSD0;
+    input wire [3:0]	SSD3, SSD2, SSD1, SSD0,
     // SSD signals
     output reg [7:0] SSD_CATHODES,
+	output An0, An1, An2, An3, An4, An5, An6, An7
     
 	
 );
