@@ -1,5 +1,6 @@
 module SSD_Controller (
-    input ssdscan_clk,
+    input wire [1:0] ssdscan_clk,
+
     input wire [3:0]	SSD3, SSD2, SSD1, SSD0,
     // SSD signals
     output reg [7:0] SSD_CATHODES,
@@ -8,6 +9,9 @@ module SSD_Controller (
 	
 );
     reg [3:0]	SSD;
+
+	// Turn on one of the 4 anodes
+
 	assign An0	= !(~(ssdscan_clk[1]) && ~(ssdscan_clk[0]));  // when ssdscan_clk = 00
 	assign An1	= !(~(ssdscan_clk[1]) &&  (ssdscan_clk[0]));  // when ssdscan_clk = 01
 	assign An2	=  !((ssdscan_clk[1]) && ~(ssdscan_clk[0]));  // when ssdscan_clk = 10
