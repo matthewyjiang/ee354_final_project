@@ -1,26 +1,61 @@
 `timescale 1ns / 1ps
 
 
-module Input_Interface (
-    input wire clk,
-    input wire reset,
-    input wire [7:0] switches, // Replace N with the number of switches
-    input wire [3:0] buttons // Replace M with the number of buttons
-);
 
-    // Input processing logic goes here, including debouncing
 
-endmodule
+
 
 module Game_Logic (
     input wire clk,
-    input wire reset
-    // Game state signals, e.g., player position, maze state, etc.
-    // ...
+    input wire reset,
+    input wire [3:0] DPBs,
+    input wire [3:0] SCENs,
+    input reg [2459:0] map,
+
+    output wire lost
+    output reg [7:0] player_x_pos,
+    output reg [7:0] player_y_pos
 );
 
-    // Game logic goes here, including maze generation and collision detection
+    wire SCEN_any;
+    assign SCEN_any = SCENs[0] | SCENs[1] | SCENs[2] | SCENs[3];
 
+    initial begin
+        player_x_pos = 8'd0;
+        player_y_pos = 8'd20;
+    end
+
+    always @ (posedge SCEN_any) begin // movement logic
+        if (SCENs[0]) begin
+            player_y_pos = player_y_pos - 1;
+        end
+        if (SCENs[1]) begin
+            player_y_pos = player_y_pos + 1;
+        end
+        if (SCENs[2]) begin
+            player_x_pos = player_x_pos - 1;
+        end
+        if (SCENs[3]) begin
+            player_x_pos = player_x_pos + 1;
+        end
+    end
+
+    always @ (posedge clk) begin 
+        if (reset) begin
+            player_x_pos <= 8'd0;
+            player_y_pos <= 8'd20;
+        end
+        else begin // map collision logic
+            assign map_index = player_x_pos + player_y_pos * 60;
+            if (map[map_index] == 1) begin
+                lost <= 1;
+            end 
+        end
+    end
+
+
+
+    
 endmodule
 
 module Top_Level (
@@ -113,20 +148,34 @@ module Top_Level (
         .Dp(Dp)
     );
 
+    
+    wire [3:0] buttons;
+    assign buttons = {up, down, left, right, Reset};
+    wire [3:0] DPBs;
+    wire [3:0] SCENs;
+    wire [3:0] MCENs;
+    wire [3:0] CCENs;
+
+    // signals for input to game logic
+
+
     // // Input Interface instance
-    // Input_Interface input_interface_inst (
-    //     .clk(clk),
-    //     .reset(reset),
-    //     .switches(switches), // Connect switches
-    //     .buttons(buttons) // Connect buttons
-    // );
+    Input_Interface input_interface_inst (
+        .clk(clk),
+        .reset(reset),
+        .buttons(buttons) // Connect buttons
+        .DPBs(DPBs),
+        .SCENs(SCENs),
+        .MCENs(MCENs),
+        .CCENs(CCENs)
+    );
 
     // // Game Logic instance
-    // Game_Logic game_logic_inst (
-    //     .clk(clk),
-    //     .reset(reset)
-    //     // Connect other ports
-    // );
+    Game_Logic game_logic_inst (
+        .clk(clk),
+        .reset(reset),
+        .DPBs(DPBs)
+    );
 
     assign vgaR = rgb[11 : 8];
 	assign vgaG = rgb[7  : 4];

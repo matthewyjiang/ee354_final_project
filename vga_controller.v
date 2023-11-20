@@ -3,6 +3,8 @@
 module vga_controller(
     input wire clk,          // Main clock
     input wire reset,        // Reset signal
+    input reg [7:0] player_x_pos,
+    input reg [7:0] player_y_pos,
     output wire hsync,       // Horizontal sync output
     output wire vsync,       // Vertical sync output
     output reg [11:0] rgb,   // RGB output
@@ -12,7 +14,7 @@ module vga_controller(
 );
 
     
-    
+    localparam player_width = 20;
 
     localparam H_MAX = 10'd799;
     localparam V_MAX = 10'd599;
@@ -40,7 +42,12 @@ module vga_controller(
     // VGA signal generation logic goes here
     always @(posedge clk25) begin
         // Generate sync pulses and pixel data here
-        rgb <= 12'b111100000000; // Black color temp
+        rgb <= 12'h000000; // Black color temp blackground
+
+        // draw player! 
+        if (h_counter >= player_x_pos && h_counter <= player_x_pos + player_width && v_counter >= player_y_pos && v_counter <= player_y_pos + player_width) begin
+            rgb <= 12'hFFFFFF; // WHITE color temp
+        end
 
         // Increment counters
         h_counter <= (h_counter == H_MAX) ? 0 : h_counter + 1;
