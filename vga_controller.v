@@ -28,6 +28,7 @@ module vga_controller(
 		pulse = 0;
         h_counter = 10'b0000000000;
         v_counter = 10'b0000000000;
+        rgb = 12'b111100000000;
 	end
 
     always @(posedge clk)
@@ -39,7 +40,7 @@ module vga_controller(
     // VGA signal generation logic goes here
     always @(posedge clk25) begin
         // Generate sync pulses and pixel data here
-        rgb <= 12'b000000000000; // Black color temp
+        rgb <= 12'b111100000000; // Black color temp
 
         // Increment counters
         h_counter <= (h_counter == H_MAX) ? 0 : h_counter + 1;

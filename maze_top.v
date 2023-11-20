@@ -73,6 +73,10 @@ module Top_Level (
     // Clock division and generation logic
     // Clock management to generate a 25MHz clock from the onboard clock
 
+    wire clk_25MHz;
+
+    assign clk_25MHz = DIV_CLK[25];
+
     // VGA Controller instance
     vga_controller vga_controller_inst (
         .clk(clk_25MHz),
