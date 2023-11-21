@@ -2,6 +2,8 @@
 
 Blind Maze Game for **Digilent Nexys A7** by Matthew Jiang and Kelvin Cao, A.K.A Ash Ketchum Saves Pikachu -_-
 
+Final project for EE354 (Introduction to Digital Circuit Design) at USC
+
 ## Game Objective
 
 The objective of the game is too reach the end point, which is marked and exactly 30 units across from the start.
