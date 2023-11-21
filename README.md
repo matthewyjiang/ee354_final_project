@@ -1,6 +1,6 @@
 # ee354_final_project
 
-Blind Maze Game by Matthew Jiang and Kelvin Cao, A.K.A Ash Ketchum Saves Pikachu -_-
+Blind Maze Game for **Digilent Nexys A7** by Matthew Jiang and Kelvin Cao, A.K.A Ash Ketchum Saves Pikachu -_-
 
 ## Game Objective
 
@@ -27,3 +27,9 @@ The buttons are also used to navigate the menu.
 - Left Button: change selection left
 - Right Button: change selection right
 - Top Button: select item
+
+## Build Instructions
+
+- Clone the project and import it into Vivado, select all verilog files to add to project. 
+- Generate the bitstream file and upload it to the FPGA Board. 
+- **This project is designed for the Nexys A7 Variant and thus only contains design constraints (.xdc file) to support the Nexys A7 board.**
