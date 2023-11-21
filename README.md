@@ -8,11 +8,11 @@ The objective of the game is too reach the end point, which is marked and exactl
 
 The player is shown the maze layout for a short duration, depending on the difficulty selection. The player now needs to attempt to navigate the to the end point, with a lack of information. If a maze obstacle is hit, the player is reset to the beginning and shown the map layout again for a short duration. 
 
-### Map Generation
+## Map Generation
 
 Maps are randomly generated and validated using a script, and later read into FPGA memory. The map generation script is written using the rust language but simply outputs a text file with a map, 1 representing an obstacle and 0 representing a clear space. Map generation rules can be altered.
 
-### Controls
+## Controls
 
 The game is controlled by the FPGA push buttons. 
 
