@@ -12,7 +12,17 @@ module vga_controller(
     output reg [9:0] v_counter  // Vertical counter
     
 );
+    localparam ADDRW = $clog2(21);
 
+    reg [ADDRW-1:0] addr;
+    reg [29:0] map_data_out; // 30 bits for 21x30 map
+
+    rom map_rom_inst #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) (
+        .clk(clk),
+        .addr(addr),
+        .addr_out(),
+        .data_out(map_data_out),
+    );
     
     localparam player_width = 20;
 
@@ -44,8 +54,24 @@ module vga_controller(
         // Generate sync pulses and pixel data here
         rgb <= 12'h000000; // Black color temp blackground
 
+        //draw map
+
+        integer y_coord;
+        integer x_coord;
+
+       // compute the map coordinates and rom address
+        y_coord = h_counter / player_width;
+        addr = y_coord
+        x_coord = v_counter / player_width;
+
+        if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
+            if (map_data_out[x_coord]) begin
+                rgb <= 12'FFFF00; // Brown color temp
+            end
+        end
+
         // draw player! 
-        if (h_counter >= player_x_pos && h_counter <= player_x_pos + player_width && v_counter >= player_y_pos && v_counter <= player_y_pos + player_width) begin
+        if (h_counter >= (player_width*player_x_pos) && h_counter <= (player_width*player_x_pos) + player_width && v_counter >= (player_width*player_y_pos) && v_counter <= (player_width*player_y_pos) + player_width) begin
             rgb <= 12'hFFFFFF; // WHITE color temp
         end
 

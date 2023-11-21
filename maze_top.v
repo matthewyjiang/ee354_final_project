@@ -2,20 +2,28 @@
 
 
 
-
-
-
 module Game_Logic (
     input wire clk,
     input wire reset,
     input wire [3:0] DPBs,
     input wire [3:0] SCENs,
-    input reg [2459:0] map,
 
     output wire lost
     output reg [7:0] player_x_pos,
     output reg [7:0] player_y_pos
 );
+
+    localparam ADDRW = $clog2(21);
+
+    reg [ADDRW-1:0] addr;
+    reg [29:0] data_out;
+
+    rom map_rom_inst #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) (
+        .clk(clk),
+        .addr(addr),
+        .addr_out(),
+        .data_out(data_out),
+    );
 
     wire SCEN_any;
     assign SCEN_any = SCENs[0] | SCENs[1] | SCENs[2] | SCENs[3];
@@ -27,17 +35,19 @@ module Game_Logic (
 
     always @ (posedge SCEN_any) begin // movement logic
         if (SCENs[0]) begin
-            player_y_pos = player_y_pos - 1;
+            player_y_pos <= player_y_pos - 1;
         end
         if (SCENs[1]) begin
-            player_y_pos = player_y_pos + 1;
+            player_y_pos <= player_y_pos + 1;
         end
         if (SCENs[2]) begin
-            player_x_pos = player_x_pos - 1;
+            player_x_pos <= player_x_pos - 1;
         end
         if (SCENs[3]) begin
-            player_x_pos = player_x_pos + 1;
+            player_x_pos <= player_x_pos + 1;
         end
+
+        addr <= player_y_pos;
     end
 
     always @ (posedge clk) begin 
@@ -46,10 +56,9 @@ module Game_Logic (
             player_y_pos <= 8'd20;
         end
         else begin // map collision logic
-            assign map_index = player_x_pos + player_y_pos * 60;
-            if (map[map_index] == 1) begin
-                lost <= 1;
-            end 
+            if (data_out[player_x_pos]) begin
+                lost <= 1'b1;
+            end
         end
     end
 
@@ -157,6 +166,8 @@ module Top_Level (
     wire [3:0] CCENs;
 
     // signals for input to game logic
+
+    reg [20:0] map [29:0];
 
 
     // // Input Interface instance
