@@ -121,16 +121,9 @@ module Top_Level (
 
     assign clk_25MHz = DIV_CLK[25];
 
-    // VGA Controller instance
-    vga_controller vga_controller_inst (
-        .clk(clk_25MHz),
-        .reset(reset),
-        .hsync(hSync),
-        .vsync(vSync),
-        .rgb(rgb),
-        .h_counter(hc),
-        .v_counter(vc)
-    );
+    reg [7:0] player_x_pos;
+    reg [7:0] player_y_pos;
+    
 
     // SSD Controller instance
     ssd_controller ssd_controller_inst (
@@ -181,11 +174,30 @@ module Top_Level (
         .CCENs(CCENs)
     );
 
-    // // Game Logic instance
+    wire lost;
+
+    // Game Logic instance
     Game_Logic game_logic_inst (
         .clk(clk),
         .reset(reset),
-        .DPBs(DPBs)
+        .DPBs(DPBs),
+        .SCENs(SCENs),
+        .lost(lost),
+        .player_x_pos(player_x_pos),
+        .player_y_pos(player_y_pos)
+    );
+
+    // VGA Controller instance
+    vga_controller vga_controller_inst (
+        .clk(clk_25MHz),
+        .reset(reset),
+        .hsync(hSync),
+        .vsync(vSync),
+        .rgb(rgb),
+        .h_counter(hc),
+        .v_counter(vc),
+        .player_x_pos(player_x_pos),
+        .player_y_pos(player_y_pos)
     );
 
     assign vgaR = rgb[11 : 8];
