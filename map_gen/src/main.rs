@@ -7,14 +7,14 @@ use rand::prelude::*;
 use std::fs::File;
 use std::io::prelude::*;
 fn main() {
-    let map_x_size: usize = 60;
-    let map_y_size: usize = 41;
-    let starting_point = (0, 20);
-    let ending_point = (59, 20);
+    let map_x_size: usize = 30;
+    let map_y_size: usize = 21;
+    let starting_point = (0, 10);
+    let ending_point = (29, 10);
 
     let mut map = vec![vec![0; map_y_size]; map_x_size];
 
-    let num_obstacles = 300;
+    let num_obstacles = 150;
 
     let mut rng = rand::thread_rng();
 
@@ -80,11 +80,12 @@ fn main() {
         for y in 0..map_y_size {
             for x in 0..map_x_size {
                 map_string.push_str(&map[x][y].to_string());
+                map_string.push(' ');
             }
             map_string.push('\n');
         }
 
-        let mut file = File::create("map.txt").expect("Error encountered while creating file!");
+        let mut file = File::create("map.mem").expect("Error encountered while creating file!");
         file.write_all(map_string.as_bytes())
             .expect("Error encountered while writing to file!");
     } else {
