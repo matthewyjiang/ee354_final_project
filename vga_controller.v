@@ -8,9 +8,8 @@ module vga_controller(
     output wire hsync,       // Horizontal sync output
     output wire vsync,       // Vertical sync output
     output reg [11:0] rgb,   // RGB output
-    output reg [9:0] h_counter, // Horizontal counter
-    output reg [9:0] v_counter  // Vertical counter
-    
+    output reg [9:0] hCount, // Horizontal counter
+    output reg [9:0] vCount  // Vertical counter
 );
     localparam ADDRW = $clog2(21);
 
@@ -26,8 +25,8 @@ module vga_controller(
     
     localparam player_width = 20;
 
-    localparam H_MAX = 10'd799;
-    localparam V_MAX = 10'd599;
+    localparam H_MAX = 10'799;
+    localparam V_MAX = 10'520;
 
     localparam H_SYNC_PULSE = 10'd96;
     localparam V_SYNC_PULSE = 10'd2;
@@ -40,7 +39,6 @@ module vga_controller(
 		pulse = 0;
         h_counter = 10'b0000000000;
         v_counter = 10'b0000000000;
-        rgb = 12'b111100000000;
 	end
 
     always @(posedge clk)
@@ -83,14 +81,14 @@ module vga_controller(
         end
 
         // Increment counters
-        h_counter <= (h_counter == H_MAX) ? 0 : h_counter + 1;
-        if (h_counter == H_MAX) begin
-            v_counter <= (v_counter == V_MAX) ? 0 : v_counter + 1;
+        hCount <= (hCount == H_MAX) ? 0 : hCount + 1;
+        if (hCount == H_MAX) begin
+            vCount <= (vCount == V_MAX) ? 0 : vCount + 1;
         end
     end
 
 
-assign hsync = (h_counter < H_SYNC_PULSE) ? 1'b0 : 1'b1;
-assign vsync = (v_counter < V_SYNC_PULSE) ? 1'b0 : 1'b1;
+assign hsync = (hCount < H_SYNC_PULSE) ? 1'b0 : 1'b1;
+assign vsync = (vCount < V_SYNC_PULSE) ? 1'b0 : 1'b1;
 
 endmodule
