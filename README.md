@@ -29,6 +29,7 @@ The buttons are also used to navigate the menu.
 - Left Button: change selection left
 - Right Button: change selection right
 - Top Button: select item
+- Bottom Button: return to previous menu
 
 ## Build Instructions
 
