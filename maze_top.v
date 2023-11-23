@@ -31,6 +31,8 @@ module maze_top (
 
     reg [7:0] SSD_CATHODES;
 
+    wire clk;
+
     
 	wire [1:0] 	ssdscan_clk;
 
@@ -46,12 +48,11 @@ module maze_top (
 	assign move_clk=DIV_CLK[19]; //slower clock to drive the movement of objects on the vga screen
 	wire [11:0] background;
     assign ssdscan_clk = DIV_CLK[19:18];
-    // Instantiate modules and wire them up
 
-    // Clock division and generation logic
-    // Clock management to generate a 25MHz clock from the onboard clock
 
-    // test if the clock is working
+    // 25MHz clock divider
+    assign clk = DIV_CLK[2];
+
     
     assign SSD0 = 4'b1111;
     assign SSD1 = vgaR;
@@ -126,7 +127,7 @@ module maze_top (
 
     // VGA Controller instance
     vga_controller vga_controller_inst (
-        .clk(ClkPort),
+        .clk(clk),
         .hsync(hSync),
         .vsync(vSync),
         .bright(bright),
