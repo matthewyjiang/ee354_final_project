@@ -7,7 +7,11 @@ module Game_Logic (
     input wire reset,
     input wire [3:0] DPBs,
     input wire [3:0] SCENs,
+    input bright,
+    input wire hcount,
+    input wire vcount,
 
+    output reg [11:0] rgb,   // RGB output
     output reg lost,
     output reg [7:0] player_x_pos,
     output reg [7:0] player_y_pos
@@ -22,7 +26,7 @@ module Game_Logic (
         .clk(clk),
         .addr(addr),
         .addr_out(),
-        .data_out(data_out)
+        .data_out(map_data_out)
     );
 
     integer show_map_duration;
@@ -110,7 +114,34 @@ module Game_Logic (
             end
         end
     end
+    localparam player_width = 20;
 
+    integer y_coord;
+    integer x_coord;
+
+    wire player_fill;
+    assign player_fill = hCount >= (player_width*player_x_pos) && hCount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width;
+
+
+    always @ (*) begin
+        rgb = 12'b111100000000; // Black color temp background
+
+        // // compute the map coordinates and rom address
+        // y_coord = hcount / player_width;
+        // addr = y_coord;
+        // x_coord = vcount / player_width;
+
+        // if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
+        //     if (map_data_out[x_coord]) begin
+        //         rgb = 12'b111111110000; // Brown color temp
+        //     end
+        // end
+
+        // // draw player! 
+        // if (player_fill) begin
+        //     rgb = 12'b111111111111; // WHITE color temp
+        // end
+    end
 
 
     
@@ -232,6 +263,8 @@ module maze_top (
         .DPBs(DPBs),
         .SCENs(SCENs),
         .lost(lost),
+        .rgb(rgb),
+        .bright(bright),
         .player_x_pos(player_x_pos),
         .player_y_pos(player_y_pos)
     );
@@ -242,11 +275,9 @@ module maze_top (
         .reset(reset),
         .hsync(hSync),
         .vsync(vSync),
-        .rgb(rgb),
+        .bright(bright),
         .hCount(hc),
         .vCount(vc),
-        .player_x_pos(player_x_pos),
-        .player_y_pos(player_y_pos)
     );
 
     assign vgaR = rgb[11 : 8];
