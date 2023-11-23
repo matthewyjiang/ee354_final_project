@@ -277,7 +277,7 @@ module maze_top (
         .vsync(vSync),
         .bright(bright),
         .hCount(hc),
-        .vCount(vc),
+        .vCount(vc)
     );
 
     assign vgaR = rgb[11 : 8];
