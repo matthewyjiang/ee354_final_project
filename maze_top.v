@@ -120,7 +120,7 @@ module Game_Logic (
     integer x_coord;
 
     wire player_fill;
-    assign player_fill = hCount >= (player_width*player_x_pos) && hCount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width;
+    assign player_fill = hcount >= (player_width*player_x_pos) && hcount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width;
 
 
     always @ (*) begin
