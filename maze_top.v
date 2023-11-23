@@ -113,7 +113,7 @@ module maze_top (
 
     // Game Logic instance
     Game_Logic game_logic_inst (
-        .clk(ClkPort),
+        .clk(move_clk),
         .reset(reset),
         .DPBs(DPBs),
         .SCENs(SCENs),
@@ -127,7 +127,6 @@ module maze_top (
     // VGA Controller instance
     vga_controller vga_controller_inst (
         .clk(ClkPort),
-        .reset(reset),
         .hsync(hSync),
         .vsync(vSync),
         .bright(bright),
