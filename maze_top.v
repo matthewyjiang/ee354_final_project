@@ -243,8 +243,8 @@ module maze_top (
         .hsync(hSync),
         .vsync(vSync),
         .rgb(rgb),
-        .h_counter(hc),
-        .v_counter(vc),
+        .hCount(hc),
+        .vCount(vc),
         .player_x_pos(player_x_pos),
         .player_y_pos(player_y_pos)
     );
