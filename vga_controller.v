@@ -25,8 +25,8 @@ module vga_controller(
     
     localparam player_width = 20;
 
-    localparam H_MAX = 10'799;
-    localparam V_MAX = 10'520;
+    localparam H_MAX = 10'd799;
+    localparam V_MAX = 10'd520;
 
     localparam H_SYNC_PULSE = 10'd96;
     localparam V_SYNC_PULSE = 10'd2;
