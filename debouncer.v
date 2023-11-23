@@ -8,7 +8,7 @@ module debouncer (
     output wire CCEN
 );
     
-parameter N_dc = 5;
+parameter N_dc = 25;
 
 (* fsm_encoding = "user" *)
 reg [5:0] state;
@@ -25,7 +25,7 @@ localparam
  SCEN_st    = 6'b111100,
  WH         = 6'b100000,
  MCEN_st    = 6'b101100,
- CCEN_st    = 6'b100100,
+ CCEN_st    = 6'b100100, 
  MCEN_cont  = 6'b101101,
  CCR        = 6'b100001,
  WFCR       = 6'b100010;

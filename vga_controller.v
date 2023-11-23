@@ -56,7 +56,7 @@ module vga_controller(
     // VGA signal generation logic goes here
     always @(posedge clk25) begin
         // Generate sync pulses and pixel data here
-        rgb <= 12'b000000000000; // Black color temp blackground
+        rgb <= 12'b111100000000; // Black color temp blackground
 
         //draw map
 

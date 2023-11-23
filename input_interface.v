@@ -47,7 +47,6 @@ module Input_Interface (
         .SCEN(SCENs[3]),
         .MCEN(MCENs[3]),
         .CCEN(CCENs[3])
-    );
-    // Input processing logic goes here, including debouncing
+    ); 
 
 endmodule

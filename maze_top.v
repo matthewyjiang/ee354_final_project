@@ -67,7 +67,7 @@ module Game_Logic (
     
 endmodule
 
-module Top_Level (
+module maze_top (
     input ClkPort,
 	input BtnC,
 	input BtnU,
@@ -84,14 +84,13 @@ module Top_Level (
 	
 	output QuadSpiFlashCS
 );
-    wire Reset;
-    assign Reset=BtnC;
+    wire reset;
+    assign reset=BtnC;
     wire bright;
 	wire[9:0] hc, vc;
 	wire up,down,left,right;
 	wire [3:0] anode;
 	wire [11:0] rgb;
-	wire rst;
     
     wire [3:0]	SSD3, SSD2, SSD1, SSD0;
 
@@ -101,9 +100,9 @@ module Top_Level (
 	wire [1:0] 	ssdscan_clk;
 
     reg [27:0]	DIV_CLK;
-	always @ (posedge ClkPort, posedge Reset)  
+	always @ (posedge ClkPort, posedge reset)  
 	begin : CLOCK_DIVIDER
-      if (Reset)
+      if (reset)
 			DIV_CLK <= 0;
 	  else
 			DIV_CLK <= DIV_CLK + 1'b1;
@@ -117,9 +116,12 @@ module Top_Level (
     // Clock division and generation logic
     // Clock management to generate a 25MHz clock from the onboard clock
 
-    wire clk_25MHz;
-
-    assign clk_25MHz = DIV_CLK[25];
+    // test if the clock is working
+    
+    assign SSD0 = 4'b1111;
+    assign SSD1 = 4'b1111;
+    assign SSD2 = 4'b1111;
+    assign SSD3 = 4'b1111;
 
     wire [7:0] player_x_pos;
     wire [7:0] player_y_pos;
@@ -151,7 +153,8 @@ module Top_Level (
     );
 
     
-    assign buttons = {up, down, left, right};
+
+    assign buttons = {BtnU, BtnD, BtnL, BtnR};
     wire [3:0] DPBs;
     wire [3:0] SCENs;
     wire [3:0] MCENs;
@@ -162,7 +165,7 @@ module Top_Level (
 
     // // Input Interface instance
     Input_Interface input_interface_inst (
-        .clk(clk),
+        .clk(ClkPort),
         .reset(reset),
         .buttons(buttons),// Connect buttons
         .DPBs(DPBs),
@@ -175,7 +178,7 @@ module Top_Level (
 
     // Game Logic instance
     Game_Logic game_logic_inst (
-        .clk(clk),
+        .clk(ClkPort),
         .reset(reset),
         .DPBs(DPBs),
         .SCENs(SCENs),
@@ -186,7 +189,7 @@ module Top_Level (
 
     // VGA Controller instance
     vga_controller vga_controller_inst (
-        .clk(clk_25MHz),
+        .clk(ClkPort),
         .reset(reset),
         .hsync(hSync),
         .vsync(vSync),
