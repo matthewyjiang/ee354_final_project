@@ -51,7 +51,7 @@ module maze_top (
 
 
     // 25MHz clock divider
-    assign clk = DIV_CLK[2];
+    assign clk = DIV_CLK[25];
 
     
     assign SSD0 = 4'b1111;
@@ -121,6 +121,8 @@ module maze_top (
         .lost(lost),
         .rgb(rgb),
         .bright(bright),
+        .hcount(hc),
+        .vcount(vc),
         .player_x_pos(player_x_pos),
         .player_y_pos(player_y_pos)
     );
