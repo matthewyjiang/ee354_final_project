@@ -7,7 +7,7 @@ module vga_controller(
     output wire vsync,       // Vertical sync output
     
     output reg [9:0] hCount, // Horizontal counter
-    output reg [9:0] vCount  // Vertical counter
+    output reg [9:0] vCount,  // Vertical counter
     output reg bright
 );
 
