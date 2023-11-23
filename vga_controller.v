@@ -8,6 +8,7 @@ module vga_controller(
     
     output reg [9:0] hCount, // Horizontal counter
     output reg [9:0] vCount  // Vertical counter
+    output reg bright
 );
 
     localparam H_MAX = 10'd799;
