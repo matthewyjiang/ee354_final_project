@@ -37,8 +37,8 @@ module vga_controller(
     initial begin // Set all of them initially to 0
 		clk25 = 0;
 		pulse = 0;
-        h_counter = 10'b0000000000;
-        v_counter = 10'b0000000000;
+        hCount = 10'b0000000000;
+        vCount = 10'b0000000000;
 	end
 
     always @(posedge clk)
@@ -51,7 +51,7 @@ module vga_controller(
     integer x_coord;
 
     wire player_fill;
-    assign player_fill = h_counter >= (player_width*player_x_pos) && h_counter <= (player_width*player_x_pos) + player_width && v_counter >= (player_width*player_y_pos) && v_counter <= (player_width*player_y_pos) + player_width;
+    assign player_fill = hCount >= (player_width*player_x_pos) && hCount <= (player_width*player_x_pos) + player_width && vCount >= (player_width*player_y_pos) && vCount <= (player_width*player_y_pos) + player_width;
 
 
 
@@ -65,9 +65,9 @@ module vga_controller(
 
         
         // compute the map coordinates and rom address
-        y_coord = h_counter / player_width;
+        y_coord = hCount / player_width;
         addr = y_coord;
-        x_coord = v_counter / player_width;
+        x_coord = vCount / player_width;
 
         if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
             if (map_data_out[x_coord]) begin
