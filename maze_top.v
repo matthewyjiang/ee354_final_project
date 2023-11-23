@@ -168,9 +168,9 @@ module maze_top (
     // test if the clock is working
     
     assign SSD0 = 4'b1111;
-    assign SSD1 = 4'b1111;
-    assign SSD2 = 4'b1111;
-    assign SSD3 = 4'b1111;
+    assign SSD1 = rgb[3:0];
+    assign SSD2 = rgb[7:4];
+    assign SSD3 = rgb[11:8];
 
     wire [7:0] player_x_pos;
     wire [7:0] player_y_pos;
