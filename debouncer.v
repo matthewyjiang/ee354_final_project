@@ -31,10 +31,10 @@ localparam
  WFCR       = 6'b100010;
 		      
 //logic
-always @ (posedge CLK, posedge RESET)
+always @ (posedge clk, posedge reset)
 	begin : State_Machine
 		
-		if (RESET)
+		if (reset)
 		   begin
 		      state <= INI;
 		      debounce_count <= 'bx;

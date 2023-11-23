@@ -8,7 +8,7 @@ module Game_Logic (
     input wire [3:0] DPBs,
     input wire [3:0] SCENs,
 
-    output wire lost
+    output reg lost,
     output reg [7:0] player_x_pos,
     output reg [7:0] player_y_pos
 );
@@ -16,13 +16,13 @@ module Game_Logic (
     localparam ADDRW = $clog2(21);
 
     reg [ADDRW-1:0] addr;
-    reg [29:0] data_out;
+    wire [29:0] data_out;
 
-    rom map_rom_inst #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) (
+    rom #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) map_rom_inst (
         .clk(clk),
         .addr(addr),
         .addr_out(),
-        .data_out(data_out),
+        .data_out(data_out)
     );
 
     wire SCEN_any;
@@ -121,8 +121,8 @@ module Top_Level (
 
     assign clk_25MHz = DIV_CLK[25];
 
-    reg [7:0] player_x_pos;
-    reg [7:0] player_y_pos;
+    wire [7:0] player_x_pos;
+    wire [7:0] player_y_pos;
     
 
     // SSD Controller instance
@@ -151,8 +151,7 @@ module Top_Level (
     );
 
     
-    wire [3:0] buttons;
-    assign buttons = {up, down, left, right, Reset};
+    assign buttons = {up, down, left, right};
     wire [3:0] DPBs;
     wire [3:0] SCENs;
     wire [3:0] MCENs;
@@ -160,14 +159,12 @@ module Top_Level (
 
     // signals for input to game logic
 
-    reg [20:0] map [29:0];
-
 
     // // Input Interface instance
     Input_Interface input_interface_inst (
         .clk(clk),
         .reset(reset),
-        .buttons(buttons) // Connect buttons
+        .buttons(buttons),// Connect buttons
         .DPBs(DPBs),
         .SCENs(SCENs),
         .MCENs(MCENs),

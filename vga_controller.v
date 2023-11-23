@@ -3,8 +3,8 @@
 module vga_controller(
     input wire clk,          // Main clock
     input wire reset,        // Reset signal
-    input reg [7:0] player_x_pos,
-    input reg [7:0] player_y_pos,
+    input wire [7:0] player_x_pos,
+    input wire[7:0] player_y_pos,
     output wire hsync,       // Horizontal sync output
     output wire vsync,       // Vertical sync output
     output reg [11:0] rgb,   // RGB output
@@ -15,13 +15,13 @@ module vga_controller(
     localparam ADDRW = $clog2(21);
 
     reg [ADDRW-1:0] addr;
-    reg [29:0] map_data_out; // 30 bits for 21x30 map
+    wire [29:0] map_data_out; // 30 bits for 21x30 map
 
-    rom map_rom_inst #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) (
+    rom  #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) map_rom_inst  (
         .clk(clk),
         .addr(addr),
         .addr_out(),
-        .data_out(map_data_out),
+        .data_out(map_data_out)
     );
     
     localparam player_width = 20;
@@ -48,31 +48,33 @@ module vga_controller(
 	always @(posedge pulse)
 		clk25 = ~clk25;
 		
+		
+	integer y_coord;
+    integer x_coord;
+
 
     // VGA signal generation logic goes here
     always @(posedge clk25) begin
         // Generate sync pulses and pixel data here
-        rgb <= 12'h000000; // Black color temp blackground
+        rgb <= 12'b000000000000; // Black color temp blackground
 
         //draw map
 
-        integer y_coord;
-        integer x_coord;
-
+        
        // compute the map coordinates and rom address
         y_coord = h_counter / player_width;
-        addr = y_coord
+        addr = y_coord;
         x_coord = v_counter / player_width;
 
         if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
             if (map_data_out[x_coord]) begin
-                rgb <= 12'FFFF00; // Brown color temp
+                rgb <= 12'b111111110000; // Brown color temp
             end
         end
 
         // draw player! 
         if (h_counter >= (player_width*player_x_pos) && h_counter <= (player_width*player_x_pos) + player_width && v_counter >= (player_width*player_y_pos) && v_counter <= (player_width*player_y_pos) + player_width) begin
-            rgb <= 12'hFFFFFF; // WHITE color temp
+            rgb <= 12'b111111111111; // WHITE color temp
         end
 
         // Increment counters
