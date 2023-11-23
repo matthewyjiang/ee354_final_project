@@ -52,29 +52,34 @@ module vga_controller(
 	integer y_coord;
     integer x_coord;
 
+    wire player_fill;
+    assign player_fill = h_counter >= (player_width*player_x_pos) && h_counter <= (player_width*player_x_pos) + player_width && v_counter >= (player_width*player_y_pos) && v_counter <= (player_width*player_y_pos) + player_width;
+
+
+
 
     // VGA signal generation logic goes here
     always @(posedge clk25) begin
         // Generate sync pulses and pixel data here
-        rgb <= 12'b111100000000; // Black color temp blackground
+        rgb = 12'b111111111111; // Black color temp background
 
         //draw map
 
         
-       // compute the map coordinates and rom address
+        // compute the map coordinates and rom address
         y_coord = h_counter / player_width;
         addr = y_coord;
         x_coord = v_counter / player_width;
 
         if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
             if (map_data_out[x_coord]) begin
-                rgb <= 12'b111111110000; // Brown color temp
+                rgb = 12'b111111110000; // Brown color temp
             end
         end
 
         // draw player! 
-        if (h_counter >= (player_width*player_x_pos) && h_counter <= (player_width*player_x_pos) + player_width && v_counter >= (player_width*player_y_pos) && v_counter <= (player_width*player_y_pos) + player_width) begin
-            rgb <= 12'b111111111111; // WHITE color temp
+        if (player_fill) begin
+            rgb = 12'b111111111111; // WHITE color temp
         end
 
         // Increment counters
