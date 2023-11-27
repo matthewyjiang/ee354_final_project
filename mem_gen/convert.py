@@ -1,12 +1,21 @@
 import cv2
 
-img = cv2.imread('ashKetchumBack.jpg')
+import sys
+
+args_len = len(sys.argv)
+
+filename = sys.argv[1]
+filetype = sys.argv[2]
+
+img = cv2.imread(filename+'.'+filetype)
+
+# python convert.py imageName jpg
 
 # get pixel data in 12 bit rgb and write to file
 
 # Path: mem_gen/img.mem
 
-f = open('ashKetchumBack.mem', 'w')
+f = open(filename+'.mem', 'w')
 
 for row in img:
     for pixel in row:
