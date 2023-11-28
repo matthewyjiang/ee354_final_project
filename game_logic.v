@@ -13,6 +13,8 @@ module Game_Logic (
     output reg [7:0] player_y_pos
 );
 
+    localparam x_offset = 144;
+    localparam y_offset = 35;
     localparam ADDRW_MAP = $clog2(21);
     reg [ADDRW_MAP-1:0] addr;
     wire [29:0] map_data_out;
@@ -114,7 +116,7 @@ module Game_Logic (
     integer x_coord;
 
     wire player_fill;
-    assign player_fill = (hcount >= (player_width*player_x_pos) && hcount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width);
+    assign player_fill = ((hcount - x_offset) >= (player_width*player_x_pos) && (hcount - x_offset) <= (player_width*player_x_pos) + player_width && (vcount-y_offset) >= (player_width*player_y_pos) && (vcount-x_offset) <= (player_width*player_y_pos) + player_width);
 
 
     always @ (*) begin
@@ -125,18 +127,17 @@ module Game_Logic (
 
             addr = y_coord;
 
-            // if (map_data_out[x_coord]) begin
-            //     rgb = 12'b111111110000; // Brown color temp
-            // end
-            // // draw player! 
-            // if (player_fill) begin
-            //     rgb = 12'b111100000000; // WHITE color temp
-            // end
-            // else begin 
-            //     rgb = 12'b111111111111;
-            // end
+            if (map_data_out[x_coord]) begin
+                rgb = 12'b111111110000; // Brown color temp
+            end
+            // draw player! 
+            if (player_fill) begin
+                rgb = 12'b111100000000; // WHITE color temp
+            end
+            else begin 
+                rgb = 12'b111111111111;
+            end
 
-            rgb = {2'b11, hcount};
         
         
         end else begin
