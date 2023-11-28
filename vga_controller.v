@@ -31,11 +31,11 @@ module vga_controller(
 		
     // VGA signal generation logic goes here
     always @(posedge clk25) begin
-		if (hCount < H_MAX)
+		if (hCount < 10'd799)
 			begin
 			hCount <= hCount + 1;
 			end
-		else if (vCount < V_MAX)
+		else if (vCount < 10'd524)
 			begin
 			hCount <= 0;
 			vCount <= vCount + 1;
@@ -48,8 +48,8 @@ module vga_controller(
     end
 
         // Generate sync signals
-    assign hsync = (hCount < H_SYNC_PULSE) ? 0 : 1;
-    assign vsync = (vCount < V_SYNC_PULSE) ? 0 : 1;
+    assign hsync = (hCount < 96) ? 1 : 0;
+    assign vsync = (vCount < 2) ? 1 : 0;
 
     always @(posedge clk25)
 		begin

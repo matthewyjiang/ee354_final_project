@@ -51,7 +51,7 @@ module maze_top (
 
 
     // 25MHz clock divider
-    assign clk = DIV_CLK[2];
+    assign clk = ClkPort;
 
     
     assign SSD0 = 4'b1111;
@@ -119,13 +119,15 @@ module maze_top (
         .DPBs(DPBs),
         .SCENs(SCENs),
         .lost(lost),
-        .rgb(rgb),
+        .rgb(),
         .bright(bright),
         .hcount(hc),
         .vcount(vc),
         .player_x_pos(player_x_pos),
         .player_y_pos(player_y_pos)
     );
+    
+    assign rgb = 12'b111100000000;
 
     // VGA Controller instance
     vga_controller vga_controller_inst (
