@@ -13,10 +13,9 @@ module Game_Logic (
     output reg [7:0] player_y_pos
 );
 
-    localparam ADDRW = $clog2(21);
-
-    reg [ADDRW-1:0] addr;
-    wire [29:0] data_out;
+    localparam ADDRW_MAP = $clog2(21);
+    reg [ADDRW_MAP-1:0] addr;
+    wire [29:0] map_data_out;
 
     rom #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) map_rom_inst (
         .clk(clk),
