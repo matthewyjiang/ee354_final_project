@@ -119,7 +119,11 @@ module Game_Logic (
 
 
     always @ (*) begin
-        rgb = 12'b111100000000; // Black color temp background
+        if (bright) begin
+            rgb = 12'b111100000000; // Black color temp background
+        end else begin
+            rgb = 12'b000000000000; // Black color temp background
+        end
 
         // // compute the map coordinates and rom address
         // y_coord = hcount / player_width;

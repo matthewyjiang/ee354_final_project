@@ -2,8 +2,7 @@
 
 module vga_controller(
     input wire clk,          // Main clock
-    output wire hsync,       // Horizontal sync output
-    output wire vsync,       // Vertical sync output
+    output hsync, vsync,       // Vertical sync output
     
     output reg [9:0] hCount, // Horizontal counter
     output reg [9:0] vCount,  // Vertical counter
