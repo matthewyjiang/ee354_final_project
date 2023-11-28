@@ -86,37 +86,30 @@ module Game_Logic (
         end
         if (game_state == GAME_STATE_in_game) begin
             if (SCENs[0]) begin
-                player_y_pos <= player_y_pos - 1;
-            end
-            if (SCENs[1]) begin
-                player_y_pos <= player_y_pos + 1;
-            end
-            if (SCENs[2]) begin
                 player_x_pos <= player_x_pos - 1;
             end
-            if (SCENs[3]) begin
+            if (SCENs[1]) begin
                 player_x_pos <= player_x_pos + 1;
             end
-        end
-
-        
-        else begin // map collision logic
-
-
-            if (map_data_out[player_x_pos]) begin
-                lost <= 1'b1;
+            if (SCENs[2]) begin
+                player_y_pos <= player_y_pos - 1;
+            end
+            if (SCENs[3]) begin
+                player_y_pos <= player_y_pos + 1;
             end
         end
+
+    
     end
 
     localparam player_width = 32;
     localparam player_width_log = 5;
 
-    integer y_coord;
-    integer x_coord;
+    reg [ADDRW_MAP-1:0] y_coord;
+    reg [4:0] x_coord;
 
     wire player_fill;
-    assign player_fill = ((hcount - x_offset) >= (player_width*player_x_pos) && (hcount - x_offset) <= (player_width*player_x_pos) + player_width && (vcount-y_offset) >= (player_width*player_y_pos) && (vcount-x_offset) <= (player_width*player_y_pos) + player_width);
+    assign player_fill = ((vcount - x_offset) >= (player_width*player_x_pos) && (vcount - x_offset) <= (player_width*player_x_pos) + player_width && ((hcount-y_offset) >= (player_width*player_y_pos)) && ((hcount-y_offset) <= (player_width*player_y_pos + player_width)));
 
 
     always @ (*) begin
@@ -125,13 +118,11 @@ module Game_Logic (
             y_coord = vcount << player_width_log;
             x_coord = hcount << player_width_log;
 
-            addr = y_coord;
+            addr = y_coord[ADDRW_MAP-1:0];
 
             if (map_data_out[x_coord]) begin
                 rgb = 12'b111111110000; // Brown color temp
-            end
-            // draw player! 
-            if (player_fill) begin
+            end else if (player_fill) begin
                 rgb = 12'b111100000000; // WHITE color temp
             end
             else begin 
