@@ -126,21 +126,21 @@ module Game_Logic (
     always @ (*) begin
         rgb = 12'b111100000000; // Black color temp background
 
-        // compute the map coordinates and rom address
-        y_coord = hcount / player_width;
-        addr = y_coord;
-        x_coord = vcount / player_width;
+//        // compute the map coordinates and rom address
+//        y_coord = hcount / player_width;
+//        addr = y_coord;
+//        x_coord = vcount / player_width;
 
-        if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
-            if (map_data_out[x_coord]) begin
-                rgb = 12'b111111110000; // Brown color temp
-            end
-        end
+//        if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
+//            if (map_data_out[x_coord]) begin
+//                rgb = 12'b111111110000; // Brown color temp
+//            end
+//        end
 
-        // draw player! 
-        if (player_fill) begin
-            rgb = 12'b111111111111; // WHITE color temp
-        end
+//        // draw player! 
+//        if (player_fill) begin
+//            rgb = 12'b111111111111; // WHITE color temp
+//        end
     end
 
     always @(posedge SCEN_any) begin
@@ -190,7 +190,7 @@ module Game_Logic (
         if (game_state_menu == GAME_STATE_MENU_instructions) begin
             if (SCENs[0] || SCENs[1] || SCENs[2] || SCENs[3]) begin
                 // Return to the default state of the main menu
-                game_state_menu <= GAME_STATE_MENU_start; // or your designated default state
+                game_state_menu <= GAME_STATE_MENU_start;
             end
         end
     end 
