@@ -59,6 +59,7 @@ module maze_top (
     assign SSD2 = vgaG;
     assign SSD3 = vgaB;
 
+
     wire [7:0] player_x_pos;
     wire [7:0] player_y_pos;
     

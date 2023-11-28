@@ -24,6 +24,12 @@ module Game_Logic (
         .addr_out(),
         .data_out(map_data_out)
     );
+    //  rom #( .WIDTH(12), .DEPTH(900), .INIT_F("map.mem")) map_rom_inst (
+    //     .clk(clk),
+    //     .addr(addr),
+    //     .addr_out(),
+    //     .data_out(map_data_out)
+    // );
 
     integer show_map_duration;
 
@@ -117,27 +123,78 @@ module Game_Logic (
 
     wire player_fill;
     assign player_fill = hcount >= (player_width*player_x_pos) && hcount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width;
-
-
     always @ (*) begin
         rgb = 12'b111100000000; // Black color temp background
 
-        // // compute the map coordinates and rom address
-        // y_coord = hcount / player_width;
-        // addr = y_coord;
-        // x_coord = vcount / player_width;
+        // compute the map coordinates and rom address
+        y_coord = hcount / player_width;
+        addr = y_coord;
+        x_coord = vcount / player_width;
 
-        // if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
-        //     if (map_data_out[x_coord]) begin
-        //         rgb = 12'b111111110000; // Brown color temp
-        //     end
-        // end
+        if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
+            if (map_data_out[x_coord]) begin
+                rgb = 12'b111111110000; // Brown color temp
+            end
+        end
 
-        // // draw player! 
-        // if (player_fill) begin
-        //     rgb = 12'b111111111111; // WHITE color temp
-        // end
+        // draw player! 
+        if (player_fill) begin
+            rgb = 12'b111111111111; // WHITE color temp
+        end
     end
+
+    always @(posedge SCEN_any) begin
+        if (game_state == GAME_STATE_in_menu) begin
+            // Navigate through main menu options
+            if (SCENs[2]) begin // Left
+                case (game_state_menu)
+                    GAME_STATE_MENU_start: game_state_menu <= GAME_STATE_MENU_difficulty;
+                    GAME_STATE_MENU_instructions: game_state_menu <= GAME_STATE_MENU_start;
+                endcase
+            end
+            if (SCENs[3]) begin // Right
+                case (game_state_menu)
+                    GAME_STATE_MENU_start: game_state_menu <= GAME_STATE_MENU_instructions;
+                    GAME_STATE_MENU_difficulty: game_state_menu <= GAME_STATE_MENU_start;
+                endcase
+            end
+            if (SCENs[0]) begin // Select button pressed
+                game_state <= GAME_STATE_in_game;
+            end
+        end 
+        if(game_state == GAME_STATE_MENU_difficulty) begin
+        // Navigate through difficulty options
+            if (SCENs[2]) begin // Left button pressed
+                case (game_state_difficulty)
+                    GAME_STATE_DIFFICULTY_easy: game_state_difficulty <= GAME_STATE_DIFFICULTY_hard;
+                    GAME_STATE_DIFFICULTY_medium: game_state_difficulty <= GAME_STATE_DIFFICULTY_easy;
+                    GAME_STATE_DIFFICULTY_hard: game_state_difficulty <= GAME_STATE_DIFFICULTY_medium;
+                endcase
+            end
+            if (SCENs[3]) begin // Right button pressed
+                case (game_state_difficulty)
+                    GAME_STATE_DIFFICULTY_easy: game_state_difficulty <= GAME_STATE_DIFFICULTY_medium;
+                    GAME_STATE_DIFFICULTY_medium: game_state_difficulty <= GAME_STATE_DIFFICULTY_hard;
+                    GAME_STATE_DIFFICULTY_hard: game_state_difficulty <= GAME_STATE_DIFFICULTY_easy;
+                endcase
+            end
+            if (SCENs[0]) begin
+                case (game_state_menu)
+                    GAME_STATE_MENU_start: begin
+                        game_state <= GAME_STATE_in_game;
+                        game_state_game <= GAME_STATE_GAME_playing; // Define this state if needed
+                    end
+                endcase
+            end
+        end
+        if (game_state_menu == GAME_STATE_MENU_instructions) begin
+            if (SCENs[0] || SCENs[1] || SCENs[2] || SCENs[3]) begin
+                // Return to the default state of the main menu
+                game_state_menu <= GAME_STATE_MENU_start; // or your designated default state
+            end
+        end
+    end 
+
 
 
     

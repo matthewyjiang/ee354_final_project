@@ -58,14 +58,71 @@ module maze_top_tb;
     // Apply stimulus to the inputs
     initial begin
         // Initialize inputs
-        // ...
+        Reset = 1;
+        BtnC = 0;
+        BtnU = 0;
+        BtnD = 0;
+        BtnL = 0;
+        BtnR = 0;
         
+        // Reset the system
+        #20;
+        Reset = 0;
 
-        // Apply stimulus
-        // ...
-
-        // Wait for some time
+        // Moving through the maze (Up Right Down Left)
         #100;
+        BtnU = 1; //Move Up
+        #20;
+        BtnU = 0;
+        #100;
+        BtnR = 1; //Move Right
+        #20;
+        BtnR = 0;
+        #100;
+        BtnD = 1; //Move Down
+        #20;
+        BtnD = 0;
+        #100;
+        BtnL = 1;//Move Left
+        #20;
+        BtnL = 0;
+        #100;
+        // Wait for some time
+        #1000;
+
+        BtnU = 1; //Move Up
+        #20;
+        BtnU = 1;
+        #20;
+        BtnU = 1;
+        #20
+        BtnU = 0;
+        #20
+        BtnR = 1; //Move Right
+        #20;
+        BtnR = 1;
+        #20;
+        BtnR = 1;
+        #20;
+        BtnR = 0;
+        #100;
+        BtnD = 1; //Move Down
+        #20;
+        BtnD = 1; //Move Down
+        #20;
+        BtnD = 0;
+        #100;
+        BtnL = 1;//Move Left
+        #20;
+        BtnL = 1;//Move Left
+        #20;
+        BtnL = 1;//Move Left
+        #20;
+        BtnL = 0;
+        #100;
+
+
+
 
         // End the simulation
         $finish;
