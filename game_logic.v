@@ -104,6 +104,8 @@ module Game_Logic (
             player_y_pos <= 8'd20;
         end
         else begin // map collision logic
+
+   916a937..79d07b5  main       -> origin/main
             if (data_out[player_x_pos]) begin
                 lost <= 1'b1;
             end
