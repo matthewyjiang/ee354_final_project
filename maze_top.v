@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-
-
 module maze_top (
     input ClkPort,
 	input BtnC,
@@ -50,8 +48,6 @@ module maze_top (
     assign ssdscan_clk = DIV_CLK[19:18];
 
 
-    // 25MHz clock divider
-    assign clk = ClkPort;
 
     
     assign SSD0 = 4'b1111;
@@ -63,30 +59,7 @@ module maze_top (
     wire [7:0] player_y_pos;
     
 
-    // SSD Controller instance
-    ssd_controller ssd_controller_inst (
-        .ssdscan_clk(ssdscan_clk),
-        .SSD3(SSD3),
-        .SSD2(SSD2),
-        .SSD1(SSD1),
-        .SSD0(SSD0),
-        .An0(An0),
-        .An1(An1),
-        .An2(An2),
-        .An3(An3),
-        .An4(An4),
-        .An5(An5),
-        .An6(An6),
-        .An7(An7),
-        .Ca(Ca),
-        .Cb(Cb),
-        .Cc(Cc),
-        .Cd(Cd),
-        .Ce(Ce),
-        .Cf(Cf),
-        .Cg(Cg),
-        .Dp(Dp)
-    );
+    
 
     
 
@@ -114,30 +87,33 @@ module maze_top (
 
     // Game Logic instance
     Game_Logic game_logic_inst (
-        .clk(move_clk),
+        .clk(ClkPort),
         .reset(reset),
         .DPBs(DPBs),
         .SCENs(SCENs),
         .lost(lost),
-        .rgb(),
+        .rgb(rgb),
         .bright(bright),
         .hcount(hc),
         .vcount(vc),
         .player_x_pos(player_x_pos),
         .player_y_pos(player_y_pos)
     );
-    
-    assign rgb = 12'b111100000000;
 
     // VGA Controller instance
     vga_controller vga_controller_inst (
-        .clk(clk),
+        .clk(ClkPort),
         .hsync(hSync),
         .vsync(vSync),
         .bright(bright),
         .hCount(hc),
         .vCount(vc)
     );
+    block_controller sc(.clk(move_clk), .mastClk(ClkPort), .bright(bright), .rst(BtnC), .up(BtnU), .down(BtnD),.left(BtnL),.right(BtnR),.hCount(hc), .vCount(vc), .rgb(rgb), .background(background));
+	
+
+
+    
 
     assign vgaR = rgb[11 : 8];
 	assign vgaG = rgb[7  : 4];
@@ -145,9 +121,32 @@ module maze_top (
     
 
     // disable mamory ports
-	assign {QuadSpiFlashCS} = 1'b1;
+	assign QuadSpiFlashCS = 1'b1;
 
     
-	
+	// SSD Controller instance
+    ssd_controller ssd_controller_inst (
+        .ssdscan_clk(ssdscan_clk),
+        .SSD3(SSD3),
+        .SSD2(SSD2),
+        .SSD1(SSD1),
+        .SSD0(SSD0),
+        .An0(An0),
+        .An1(An1),
+        .An2(An2),
+        .An3(An3),
+        .An4(An4),
+        .An5(An5),
+        .An6(An6),
+        .An7(An7),
+        .Ca(Ca),
+        .Cb(Cb),
+        .Cc(Cc),
+        .Cd(Cd),
+        .Ce(Ce),
+        .Cf(Cf),
+        .Cg(Cg),
+        .Dp(Dp)
+    );
 	
 endmodule

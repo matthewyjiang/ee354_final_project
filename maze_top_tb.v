@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 
 module maze_top_tb;
     reg Clk, Reset;
@@ -18,7 +18,7 @@ module maze_top_tb;
     wire Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp;
 
     // Instantiate the maze_top module
-    maze_top dut (
+    vga_top dut (
         .ClkPort(Clk),
         .BtnC(BtnC),
         .BtnU(BtnU),
@@ -65,7 +65,7 @@ module maze_top_tb;
         // ...
 
         // Wait for some time
-        #100;
+        #200;
 
         // End the simulation
         $finish;

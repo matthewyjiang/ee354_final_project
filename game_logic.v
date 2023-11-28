@@ -26,19 +26,7 @@ module Game_Logic (
 
     integer show_map_duration;
 
-    wire SCEN_any;
-    assign SCEN_any = SCENs[0] | SCENs[1] | SCENs[2] | SCENs[3];
-
-    initial begin
-        player_x_pos = 8'd0;
-        player_y_pos = 8'd20;
-
-        game_state = GAME_STATE_in_menu;
-        game_state_menu = GAME_STATE_MENU_start;
-        game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
-        game_state_game = GAME_STATE_GAME_show_map;
-        show_map_duration = 0;
-    end
+   
 
     // ----------------------------------------------------------------------------------
     // Game State ENUM definitions
@@ -69,9 +57,32 @@ module Game_Logic (
     //
     // ----------------------------------------------------------------------------------
 
+    initial begin
+        player_x_pos = 8'd0;
+        player_y_pos = 8'd0;
 
-    always @ (posedge SCEN_any) begin // movement logic
-        if (game_state == GAME_STATE_GAME_playing) begin
+        game_state = GAME_STATE_in_game;
+        game_state_menu = GAME_STATE_MENU_start;
+        game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
+        game_state_game = GAME_STATE_GAME_playing;
+        show_map_duration = 0;
+    end
+
+
+    always @(posedge clk) begin
+        if(game_state == GAME_STATE_GAME_show_map) begin
+            show_map_duration <= show_map_duration + 1;
+        end
+        if (show_map_duration == 1000000) begin
+            game_state <= GAME_STATE_GAME_hide_map;
+            show_map_duration <= 0;
+        end
+
+        if (reset) begin
+            player_x_pos <= 8'd0;
+            player_y_pos <= 8'd0;
+        end
+        if (game_state == GAME_STATE_in_game) begin
             if (SCENs[0]) begin
                 player_y_pos <= player_y_pos - 1;
             end
@@ -85,64 +96,54 @@ module Game_Logic (
                 player_x_pos <= player_x_pos + 1;
             end
         end
-        addr <= player_y_pos;
-    end
 
-    always @(posedge clk) begin
-        if(game_state == GAME_STATE_GAME_show_map) begin
-            show_map_duration <= show_map_duration + 1;
-        end
-        if (show_map_duration == 1000000) begin
-            game_state <= GAME_STATE_GAME_hide_map;
-            show_map_duration <= 0;
-        end
-    end
-
-    always @ (posedge clk) begin 
-        if (reset) begin
-            player_x_pos <= 8'd0;
-            player_y_pos <= 8'd20;
-        end
+        
         else begin // map collision logic
 
-   916a937..79d07b5  main       -> origin/main
-            if (data_out[player_x_pos]) begin
+
+            if (map_data_out[player_x_pos]) begin
                 lost <= 1'b1;
             end
         end
     end
-    localparam player_width = 20;
+
+    localparam player_width = 32;
+    localparam player_width_log = 5;
 
     integer y_coord;
     integer x_coord;
 
     wire player_fill;
-    assign player_fill = hcount >= (player_width*player_x_pos) && hcount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width;
+    assign player_fill = (hcount >= (player_width*player_x_pos) && hcount <= (player_width*player_x_pos) + player_width && vcount >= (player_width*player_y_pos) && hcount <= (player_width*player_y_pos) + player_width);
 
 
     always @ (*) begin
         if (bright) begin
-            rgb = 12'b111100000000; // Black color temp background
+
+            y_coord = vcount << player_width_log;
+            x_coord = hcount << player_width_log;
+
+            addr = y_coord;
+
+            // if (map_data_out[x_coord]) begin
+            //     rgb = 12'b111111110000; // Brown color temp
+            // end
+            // // draw player! 
+            // if (player_fill) begin
+            //     rgb = 12'b111100000000; // WHITE color temp
+            // end
+            // else begin 
+            //     rgb = 12'b111111111111;
+            // end
+
+            rgb = {2'b11, hcount};
+        
+        
         end else begin
             rgb = 12'b000000000000; // Black color temp background
         end
-
-        // // compute the map coordinates and rom address
-        // y_coord = hcount / player_width;
-        // addr = y_coord;
-        // x_coord = vcount / player_width;
-
-        // if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin
-        //     if (map_data_out[x_coord]) begin
-        //         rgb = 12'b111111110000; // Brown color temp
-        //     end
-        // end
-
-        // // draw player! 
-        // if (player_fill) begin
-        //     rgb = 12'b111111111111; // WHITE color temp
-        // end
-    end
+        
+        end
 
 
     
