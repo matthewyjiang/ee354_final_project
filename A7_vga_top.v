@@ -65,6 +65,8 @@ module vga_top(
 	wire move_clk;
 	assign move_clk=DIV_CLK[19]; //slower clock to drive the movement of objects on the vga screen
 	wire [11:0] background;
+	wire maze_clk;
+	assign maze_clk = DIV_CLK[25]; //slower clock to drive the maze generation
 
 	wire [3:0] buttons;
 	wire [3:0] DPBs;
@@ -75,7 +77,7 @@ module vga_top(
 	assign buttons = {BtnR, BtnL, BtnD, BtnU};
 
 	vga_controller dc(.clk(ClkPort), .hsync(hSync), .vsync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
-	Game_Logic gl(.clk(ClkPort), .reset(Reset), .lost(), .DPBs(DPBs), .SCENs(SCENs), .rgb(rgb), .bright(bright), .hcount(hc), .vcount(vc), .player_x_pos(), .player_y_pos());
+	Game_Logic gl(.clk(ClkPort), .maze_clk(maze_clk), .reset(Reset), .lost(), .DPBs(DPBs), .SCENs(SCENs), .rgb(rgb), .bright(bright), .hcount(hc), .vcount(vc), .player_x_pos(), .player_y_pos());
 	Input_Interface input_interface_inst (
         .clk(ClkPort),
         .reset(reset),

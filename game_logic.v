@@ -4,7 +4,7 @@ module Game_Logic (
     input wire reset,
     input wire [3:0] DPBs,
     input wire [3:0] SCENs,
-    input wire clk25,
+    input wire maze_clk,
     input bright,
     input [9:0] hcount, vcount,
 
@@ -25,7 +25,7 @@ module Game_Logic (
     localparam MAP_WIDTH = 30;
     localparam MAP_HEIGHT = 21; 
     rom #( .WIDTH(MAP_WIDTH), .DEPTH(MAP_HEIGHT), .INIT_F("map.mem")) map_rom_inst (
-        .clk(clk25),
+        .clk(maze_clk),
         .addr(addr),
         .addr_out(),
         .data_out(map_data_out)
@@ -73,7 +73,7 @@ module Game_Logic (
     initial begin
         player_x_pos = 8'd0;
         player_y_pos = 8'd11;
-        addr = 0;
+        
         game_state = GAME_STATE_in_game;
         game_state_menu = GAME_STATE_MENU_start;
         game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
@@ -96,6 +96,7 @@ module Game_Logic (
         if (reset) begin
             player_x_pos <= 8'd0;
             player_y_pos <= 8'd11;
+            addr <=0;
         end
         if (game_state == GAME_STATE_in_game) begin
             if (SCENs[0] && player_y_pos > 0) begin
