@@ -17,6 +17,10 @@ module maze_top_tb;
     wire An0, An1, An2, An3, An4, An5, An6, An7;
     wire Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp;
 
+
+    reg [4:0] Addr;
+    wire [29:0] Data_out;
+
     // Instantiate the maze_top module
     vga_top dut (
         .ClkPort(Clk),
@@ -48,9 +52,21 @@ module maze_top_tb;
         .Dp(Dp)
     );
 
+    rom #(
+        .WIDTH(30),
+        .DEPTH(21),
+        .INIT_F("map.mem")
+    ) rom_inst (
+        .clk(Clk),
+        .addr(Addr),
+        .addr_out(),
+        .data_out(Data_out)
+    );
+
     initial 
 		  begin
 			Clk = 0; // Initialize clock
+            Addr = 0;
 		  end
 		
 		always  begin #10; Clk = ~ Clk; end
@@ -59,7 +75,15 @@ module maze_top_tb;
     initial begin
         // Initialize inputs
         // ...
-        
+        Reset = 1;
+        Clk = 0;
+
+        #120 Reset = 0; // Deassert reset
+
+
+        #43000 
+
+
 
         // Apply stimulus
         // ...
@@ -75,6 +99,16 @@ module maze_top_tb;
     always @(posedge Clk) begin
         // Monitor outputs
         // ...
+
+        Addr = Addr + 1;
+
+        if(Addr == 30'd20) begin
+            Addr = 0;
+        end
+
+        
+
+
 
         // Check for expected results
         // ...

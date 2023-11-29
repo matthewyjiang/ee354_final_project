@@ -4,13 +4,15 @@ module Game_Logic (
     input wire reset,
     input wire [3:0] DPBs,
     input wire [3:0] SCENs,
+    input wire clk25,
     input bright,
     input [9:0] hcount, vcount,
 
     output reg [11:0] rgb,   // RGB output
     output reg lost,
     output reg [7:0] player_x_pos,
-    output reg [7:0] player_y_pos
+    output reg [7:0] player_y_pos,
+    output reg [$clog2(21)-1:0] addr_out
 );
 
     localparam x_offset = 144;
@@ -19,12 +21,16 @@ module Game_Logic (
     reg [ADDRW_MAP-1:0] addr;
     wire [29:0] map_data_out;
 
-    rom #( .WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) map_rom_inst (
-        .clk(clk),
+
+    localparam MAP_WIDTH = 30;
+    localparam MAP_HEIGHT = 21; 
+    rom #( .WIDTH(MAP_WIDTH), .DEPTH(MAP_HEIGHT), .INIT_F("map.mem")) map_rom_inst (
+        .clk(clk25),
         .addr(addr),
         .addr_out(),
         .data_out(map_data_out)
     );
+
 
     integer show_map_duration;
 
@@ -59,15 +65,22 @@ module Game_Logic (
     //
     // ----------------------------------------------------------------------------------
 
+    
+    reg [9:0] y_coord;
+    reg [9:0] x_coord;
+
+
     initial begin
         player_x_pos = 8'd0;
-        player_y_pos = 8'd0;
-
+        player_y_pos = 8'd11;
+        addr = 0;
         game_state = GAME_STATE_in_game;
         game_state_menu = GAME_STATE_MENU_start;
         game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
         game_state_game = GAME_STATE_GAME_playing;
         show_map_duration = 0;
+        x_coord = 0;
+        y_coord = 0;
     end
 
 
@@ -82,50 +95,53 @@ module Game_Logic (
 
         if (reset) begin
             player_x_pos <= 8'd0;
-            player_y_pos <= 8'd0;
+            player_y_pos <= 8'd11;
         end
         if (game_state == GAME_STATE_in_game) begin
-            if (SCENs[0]) begin
-                player_x_pos <= player_x_pos - 1;
-            end
-            if (SCENs[1]) begin
-                player_x_pos <= player_x_pos + 1;
-            end
-            if (SCENs[2]) begin
+            if (SCENs[0] && player_y_pos > 0) begin
                 player_y_pos <= player_y_pos - 1;
             end
-            if (SCENs[3]) begin
+            if (SCENs[1] && player_y_pos < MAP_HEIGHT) begin
                 player_y_pos <= player_y_pos + 1;
+            end
+            if (SCENs[2] && player_x_pos > 0) begin
+                player_x_pos <= player_x_pos - 1;
+            end
+            if (SCENs[3] && player_x_pos < MAP_WIDTH) begin
+                player_x_pos <= player_x_pos + 1;
             end
         end
 
     
     end
 
-    localparam player_width = 32;
-    localparam player_width_log = 5;
+    localparam player_width = 16;
+    localparam player_width_log = 4;
 
-    reg [ADDRW_MAP-1:0] y_coord;
-    reg [4:0] x_coord;
+
+    wire [9:0] x_pixel;
+    wire [9:0] y_pixel;
+    assign x_pixel = hcount - x_offset;
+    assign y_pixel = vcount - y_offset;
 
     wire player_fill;
-    assign player_fill = ((vcount - x_offset) >= (player_width*player_x_pos) && (vcount - x_offset) <= (player_width*player_x_pos) + player_width && ((hcount-y_offset) >= (player_width*player_y_pos)) && ((hcount-y_offset) <= (player_width*player_y_pos + player_width)));
-
+    assign player_fill = (x_pixel>= (player_width*player_x_pos) && x_pixel <= (player_width*player_x_pos + player_width) && (y_pixel >= (player_width*player_y_pos)) && (y_pixel <= (player_width*player_y_pos + player_width)));
+    wire map_fill;
+    assign map_fill = map_data_out[x_coord];
 
     always @ (*) begin
         if (bright) begin
 
-            y_coord = vcount << player_width_log;
-            x_coord = hcount << player_width_log;
+            y_coord = (y_pixel >> player_width_log);
+            x_coord = (x_pixel >> player_width_log);
 
             addr = y_coord[ADDRW_MAP-1:0];
 
-            if (map_data_out[x_coord]) begin
-                rgb = 12'b111111110000; // Brown color temp
+            if (map_fill) begin
+                rgb = 12'b000000000000; 
             end else if (player_fill) begin
-                rgb = 12'b111100000000; // WHITE color temp
-            end
-            else begin 
+                rgb = 12'b111100000000; 
+            end else begin 
                 rgb = 12'b111111111111;
             end
 

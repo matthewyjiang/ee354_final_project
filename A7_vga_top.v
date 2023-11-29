@@ -72,7 +72,7 @@ module vga_top(
 	wire [3:0] MCENs;
 	wire [3:0] CCENs;
 
-	assign buttons = {BtnU, BtnD, BtnL, BtnR};
+	assign buttons = {BtnR, BtnL, BtnD, BtnU};
 
 	vga_controller dc(.clk(ClkPort), .hsync(hSync), .vsync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
 	Game_Logic gl(.clk(ClkPort), .reset(Reset), .lost(), .DPBs(DPBs), .SCENs(SCENs), .rgb(rgb), .bright(bright), .hcount(hc), .vcount(vc), .player_x_pos(), .player_y_pos());

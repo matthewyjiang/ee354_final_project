@@ -48,7 +48,7 @@ module maze_top (
     assign ssdscan_clk = DIV_CLK[19:18];
 
 
-
+    wire clk25;
     
     assign SSD0 = 4'b1111;
     assign SSD1 = vgaR;
@@ -61,7 +61,8 @@ module maze_top (
 
     
 
-    
+    wire [$clog2(21)-1:0] map_addr_out;
+
 
     assign buttons = {BtnU, BtnD, BtnL, BtnR};
     wire [3:0] DPBs;
@@ -88,6 +89,7 @@ module maze_top (
     // Game Logic instance
     Game_Logic game_logic_inst (
         .clk(ClkPort),
+        .clk25(clk25),
         .reset(reset),
         .DPBs(DPBs),
         .SCENs(SCENs),
@@ -97,7 +99,8 @@ module maze_top (
         .hcount(hc),
         .vcount(vc),
         .player_x_pos(player_x_pos),
-        .player_y_pos(player_y_pos)
+        .player_y_pos(player_y_pos),
+        .addr_out(map_addr_out)
     );
 
     // VGA Controller instance
@@ -107,7 +110,8 @@ module maze_top (
         .vsync(vSync),
         .bright(bright),
         .hCount(hc),
-        .vCount(vc)
+        .vCount(vc),
+        .clk25(clk25)
     );
     block_controller sc(.clk(move_clk), .mastClk(ClkPort), .bright(bright), .rst(BtnC), .up(BtnU), .down(BtnD),.left(BtnL),.right(BtnR),.hCount(hc), .vCount(vc), .rgb(rgb), .background(background));
 	
