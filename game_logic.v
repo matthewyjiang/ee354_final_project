@@ -12,7 +12,11 @@ module Game_Logic (
     output reg lost,
     output reg [7:0] player_x_pos,
     output reg [7:0] player_y_pos,
-    output reg [$clog2(21)-1:0] addr_out
+    output reg [$clog2(21)-1:0] addr_out,
+        
+    output reg [9:0] y_coord,
+    output reg [9:0] x_coord,
+    output reg map_data_out_debug
 );
 
     localparam x_offset = 144;
@@ -65,15 +69,13 @@ module Game_Logic (
     //
     // ----------------------------------------------------------------------------------
 
-    
-    reg [9:0] y_coord;
-    reg [9:0] x_coord;
+
 
 
     initial begin
         player_x_pos = 8'd0;
         player_y_pos = 8'd11;
-        addr = 0;
+        addr <= 0;
         game_state = GAME_STATE_in_game;
         game_state_menu = GAME_STATE_MENU_start;
         game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
@@ -127,7 +129,7 @@ module Game_Logic (
     wire player_fill;
     assign player_fill = (x_pixel>= (player_width*player_x_pos) && x_pixel <= (player_width*player_x_pos + player_width) && (y_pixel >= (player_width*player_y_pos)) && (y_pixel <= (player_width*player_y_pos + player_width)));
     wire map_fill;
-    assign map_fill = map_data_out[x_coord];
+
 
     always @ (*) begin
         if (bright) begin
@@ -135,13 +137,16 @@ module Game_Logic (
             y_coord = (y_pixel >> player_width_log);
             x_coord = (x_pixel >> player_width_log);
 
-            addr = y_coord[ADDRW_MAP-1:0];
-
-            if (map_fill) begin
-                rgb = 12'b000000000000; 
-            end else if (player_fill) begin
-                rgb = 12'b111100000000; 
-            end else begin 
+            if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin 
+                addr = y_coord[ADDRW_MAP-1:0];
+                map_data_out_debug = map_data_out[x_coord];
+                if (map_data_out[x_coord]) begin
+                    rgb = 12'b000000000000; 
+                end else if (player_fill) begin
+                    rgb = 12'b111100000000; 
+                end 
+            end
+            else begin 
                 rgb = 12'b111111111111;
             end
 

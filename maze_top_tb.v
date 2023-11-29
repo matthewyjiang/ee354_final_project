@@ -17,9 +17,13 @@ module maze_top_tb;
     wire An0, An1, An2, An3, An4, An5, An6, An7;
     wire Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp;
 
+    wire map_data_out_debug;
 
     reg [4:0] Addr;
     wire [29:0] Data_out;
+    wire [9:0] x_coord;
+    wire [9:0] y_coord;
+
 
     // Instantiate the maze_top module
     vga_top dut (
@@ -49,18 +53,10 @@ module maze_top_tb;
         .Ce(Ce),
         .Cf(Cf),
         .Cg(Cg),
-        .Dp(Dp)
-    );
-
-    rom #(
-        .WIDTH(30),
-        .DEPTH(21),
-        .INIT_F("map.mem")
-    ) rom_inst (
-        .clk(Clk),
-        .addr(Addr),
-        .addr_out(),
-        .data_out(Data_out)
+        .Dp(Dp),
+        .x_coord(x_coord),
+        .y_coord(y_coord),
+        .map_data_out_debug(map_data_out_debug)
     );
 
     initial 

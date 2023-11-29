@@ -100,7 +100,9 @@ module maze_top (
         .vcount(vc),
         .player_x_pos(player_x_pos),
         .player_y_pos(player_y_pos),
-        .addr_out(map_addr_out)
+        .addr_out(map_addr_out),
+        .x_coord(x_coord),
+        .y_coord(y_coord)
     );
 
     // VGA Controller instance
