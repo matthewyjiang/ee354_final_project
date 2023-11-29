@@ -80,7 +80,7 @@ fn main() {
         for y in 0..map_y_size {
             for x in 0..map_x_size {
                 map_string.push_str(&map[x][y].to_string());
-                map_string.push(' ');
+                // map_string.push(' ');
             }
             map_string.push('\n');
         }
