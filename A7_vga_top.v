@@ -35,6 +35,7 @@ module vga_top(
     // output [9:0] x_coord,
     // output [9:0] y_coord,
 	// output [29:0] map_data_out_debug,
+	// output [4:0] addr_out_debug,
 	
 	//SSG signal 
 	output An0, An1, An2, An3, An4, An5, An6, An7,
@@ -78,8 +79,8 @@ module vga_top(
 
 	assign buttons = {BtnR, BtnL, BtnD, BtnU};
 
-	vga_controller dc(.clk(ClkPort), .hsync(hSync), .vsync(vSync), .bright(bright), .hCount(hc), .vCount(vc));
-	Game_Logic gl(.clk(ClkPort), .reset(Reset), .lost(), .DPBs(DPBs), .clk25(clk25), .SCENs(SCENs), .rgb(rgb), .bright(bright), .hcount(hc), .vcount(vc), .player_x_pos(), .player_y_pos(), .x_coord(x_coord), .y_coord(y_coord), .map_data_out_debug(map_data_out_debug));
+	vga_controller dc(.clk(ClkPort), .hsync(hSync), .vsync(vSync), .bright(bright), .hCount(hc), .vCount(vc), .clk25(clk25));
+	Game_Logic gl(.clk(ClkPort), .reset(Reset), .lost(), .DPBs(DPBs), .clk25(clk25), .SCENs(SCENs), .rgb(rgb), .bright(bright), .hcount(hc), .vcount(vc), .player_x_pos(), .player_y_pos(), .x_coord(x_coord), .y_coord(y_coord), .map_data_out_debug(map_data_out_debug), .addr_out_debug(addr_out_debug));
 	Input_Interface input_interface_inst (
         .clk(ClkPort),
         .reset(reset),

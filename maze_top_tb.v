@@ -18,6 +18,7 @@ module maze_top_tb;
     wire Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp;
 
     wire [29:0] map_data_out_debug;
+    wire [4:0] addr_out_debug;
 
     reg [4:0] Addr;
     wire [29:0] Data_out;
@@ -56,7 +57,19 @@ module maze_top_tb;
         .Dp(Dp),
         .x_coord(x_coord),
         .y_coord(y_coord),
-        .map_data_out_debug(map_data_out_debug)
+        .map_data_out_debug(map_data_out_debug),
+        .addr_out_debug(addr_out_debug)
+    );
+
+    rom #(
+        .WIDTH(30),
+        .DEPTH(21),
+        .INIT_F("map.mem")
+    ) rom_inst (
+        .clk(Clk),
+        .addr(Addr),
+        .addr_out(),
+        .data_out(Data_out)
     );
 
     initial 
@@ -90,6 +103,8 @@ module maze_top_tb;
         // End the simulation
         $finish;
     end
+
+
 
     // Monitor the outputs and check for expected results
     always @(posedge Clk) begin

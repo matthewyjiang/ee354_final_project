@@ -16,13 +16,14 @@ module Game_Logic (
         
     output wire [9:0] y_coord,
     output wire [9:0] x_coord,
-    output reg [29:0] map_data_out_debug
+    output reg [29:0] map_data_out_debug,
+    output reg [4:0] addr_out_debug
 );
 
     localparam x_offset = 144;
     localparam y_offset = 35;
     localparam ADDRW_MAP = $clog2(21);
-    reg [ADDRW_MAP-1:0] addr;
+    wire [ADDRW_MAP-1:0] addr;
     wire [29:0] map_data_out;
 
 
@@ -30,11 +31,13 @@ module Game_Logic (
     localparam MAP_HEIGHT = 21; 
 
     rom #(.WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) rom_inst (
-        .clk(clk25),
+        .clk(clk),
         .addr(addr),
-        .addr_out(),
+        .addr_out(map_addr_out),
         .data_out(map_data_out)
     );
+
+    wire [4:0] map_addr_out;
 
 
     integer show_map_duration;
@@ -76,7 +79,6 @@ module Game_Logic (
     initial begin
         player_x_pos = 8'd0;
         player_y_pos = 8'd11;
-        addr <= 0;
         game_state = GAME_STATE_in_game;
         game_state_menu = GAME_STATE_MENU_start;
         game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
@@ -126,7 +128,7 @@ module Game_Logic (
     assign y_pixel = vcount - y_offset;
 
     wire player_fill;
-    assign player_fill = (x_pixel>= (player_width*player_x_pos) && x_pixel <= (player_width*player_x_pos + player_width) && (y_pixel >= (player_width*player_y_pos)) && (y_pixel <= (player_width*player_y_pos + player_width)));
+    assign player_fill = (x_pixel >= (player_width*player_x_pos) && x_pixel < (player_width*player_x_pos + player_width) && (y_pixel >= (player_width*player_y_pos)) && (y_pixel < (player_width*player_y_pos + player_width)));
     wire map_fill;
 
 
@@ -137,14 +139,17 @@ module Game_Logic (
     wire on_map;
     assign on_map = y_coord >= 0 && y_coord <= 21 && x_coord >= 0 && x_coord <= 30;
 
+    assign addr = y_coord;
 
     always @ (*) begin
+
+        addr_out_debug <= map_addr_out;
+
         if (bright) begin
 
             if (on_map) begin 
-                addr = y_coord[ADDRW_MAP-1:0];
-                map_data_out_debug = map_data_out;
-                if (map_data_out[x_coord]) begin
+                map_data_omap_data_outut_debug = map_data_out;
+                if ([x_coord]) begin
                     rgb = 12'b000000000000; 
                 end else if (player_fill) begin
                     rgb = 12'b111100000000; 
