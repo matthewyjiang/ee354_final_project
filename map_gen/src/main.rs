@@ -9,8 +9,8 @@ use std::io::prelude::*;
 fn main() {
     let map_x_size: usize = 30;
     let map_y_size: usize = 21;
-    let starting_point = (0, 11);
-    let ending_point = (29, 11);
+    let starting_point = (0, 10);
+    let ending_point = (29, 10);
 
     let mut map = vec![vec![0; map_y_size]; map_x_size];
 
