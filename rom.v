@@ -12,12 +12,12 @@ module rom #(parameter WIDTH=8,
 
     (* rom_style = "block" *)
 
-    reg [WIDTH-1:0] memory [DEPTH-1:0]; 
+    reg [WIDTH-1:0] memory [0:DEPTH-1]; 
 
     initial begin
         if (INIT_F != 0) begin
             // $display("Creating rom_async from init file '%s'.", INIT_F);
-            $readmemh(INIT_F, memory);
+            $readmemb(INIT_F, memory);
         end
     end
 

@@ -147,9 +147,10 @@ module Game_Logic (
 
         if (bright) begin
 
+            
             if (on_map) begin 
-                map_data_omap_data_outut_debug = map_data_out;
-                if ([x_coord]) begin
+                map_data_out_debug = map_data_out;
+                if (map_data_out[x_coord]) begin
                     rgb = 12'b000000000000; 
                 end else if (player_fill) begin
                     rgb = 12'b111100000000; 
