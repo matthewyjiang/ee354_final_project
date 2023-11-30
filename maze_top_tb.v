@@ -17,7 +17,7 @@ module maze_top_tb;
     wire An0, An1, An2, An3, An4, An5, An6, An7;
     wire Ca, Cb, Cc, Cd, Ce, Cf, Cg, Dp;
 
-    wire map_data_out_debug;
+    wire [29:0] map_data_out_debug;
 
     reg [4:0] Addr;
     wire [29:0] Data_out;

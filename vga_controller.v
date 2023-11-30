@@ -6,7 +6,8 @@ module vga_controller(
     
     output reg [9:0] hCount, // Horizontal counter
     output reg [9:0] vCount,  // Vertical counter
-    output reg bright
+    output reg bright,
+    output reg clk25
 );
 
     localparam H_MAX = 10'd799;
@@ -16,7 +17,6 @@ module vga_controller(
     localparam V_SYNC_PULSE = 10'd2;
 
     reg pulse;
-    reg clk25;
 
     initial begin // Set all of them initially to 0
 		clk25 = 0;

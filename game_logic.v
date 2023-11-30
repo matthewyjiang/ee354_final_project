@@ -14,9 +14,9 @@ module Game_Logic (
     output reg [7:0] player_y_pos,
     output reg [$clog2(21)-1:0] addr_out,
         
-    output reg [9:0] y_coord,
-    output reg [9:0] x_coord,
-    output reg map_data_out_debug
+    output wire [9:0] y_coord,
+    output wire [9:0] x_coord,
+    output reg [29:0] map_data_out_debug
 );
 
     localparam x_offset = 144;
@@ -28,7 +28,8 @@ module Game_Logic (
 
     localparam MAP_WIDTH = 30;
     localparam MAP_HEIGHT = 21; 
-    rom #( .WIDTH(MAP_WIDTH), .DEPTH(MAP_HEIGHT), .INIT_F("map.mem")) map_rom_inst (
+
+    rom #(.WIDTH(30), .DEPTH(21), .INIT_F("map.mem")) rom_inst (
         .clk(clk25),
         .addr(addr),
         .addr_out(),
@@ -81,8 +82,6 @@ module Game_Logic (
         game_state_difficulty = GAME_STATE_DIFFICULTY_easy;
         game_state_game = GAME_STATE_GAME_playing;
         show_map_duration = 0;
-        x_coord = 0;
-        y_coord = 0;
     end
 
 
@@ -131,23 +130,31 @@ module Game_Logic (
     wire map_fill;
 
 
+    assign y_coord = (y_pixel >> player_width_log);
+    assign x_coord = (x_pixel >> player_width_log);
+
+
+    wire on_map;
+    assign on_map = y_coord >= 0 && y_coord <= 21 && x_coord >= 0 && x_coord <= 30;
+
+
     always @ (*) begin
         if (bright) begin
 
-            y_coord = (y_pixel >> player_width_log);
-            x_coord = (x_pixel >> player_width_log);
-
-            if (y_coord >= 0 && y_coord <= 20 && x_coord >= 0 && x_coord <= 29) begin 
+            if (on_map) begin 
                 addr = y_coord[ADDRW_MAP-1:0];
-                map_data_out_debug = map_data_out[x_coord];
+                map_data_out_debug = map_data_out;
                 if (map_data_out[x_coord]) begin
                     rgb = 12'b000000000000; 
                 end else if (player_fill) begin
                     rgb = 12'b111100000000; 
                 end 
+                else begin 
+                    rgb = 12'b111111111111;
+                end
             end
             else begin 
-                rgb = 12'b111111111111;
+                rgb = 12'b000000000000;
             end
 
         
