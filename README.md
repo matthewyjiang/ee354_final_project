@@ -1,6 +1,6 @@
 # Blind Maze Game (FPGA Game)
 
-Blind Maze Game for **Digilent Nexys A7** by Matthew Jiang and Kelvin Cao, A.K.A Ash Ketchum Saves Pikachu -_-
+Blind Maze Game for **Digilent Nexys A7** by Matthew Jiang and Kelvin Cao.
 
 Final project for EE354 (Introduction to Digital Circuit Design) at USC
 
