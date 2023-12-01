@@ -6,9 +6,9 @@ Final project for EE354 (Introduction to Digital Circuit Design) at USC
 
 ## Game Objective
 
-The objective of the game is too reach the end point, which is marked and exactly 30 units across from the start.
+The objective of the game is too reach the end point, which is marked green and exactly 30 units across from the start.
 
-The player is shown the maze layout for a short duration, depending on the difficulty selection. The player now needs to attempt to navigate the to the end point, with a lack of information. If a maze obstacle is hit, the player is reset to the beginning and shown the map layout again for a short duration. 
+The player is shown the maze layout for a short duration, depending on the difficulty selection. The player now needs to attempt to navigate the to the end point, with a lack of information. If a maze obstacle is hit, the player loses and must reset the game by pressing btnC.
 
 ## Map Generation
 
@@ -24,11 +24,8 @@ The game is controlled by the FPGA push buttons.
 - Left Button: move left
 - Right Button: move right
 
-The buttons are also used to navigate the menu.
-
-- Left Button: change selection left
-- Right Button: change selection right
-- Top Button: select item
+- In starting menu (blue), top button -> start
+- When lost (red) or won (green), center button -> reset game 
 
 ## Build Instructions
 
